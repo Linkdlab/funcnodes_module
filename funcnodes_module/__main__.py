@@ -142,6 +142,7 @@ def update_project(path):
             f.write(content)
 
     os.system("poetry add pre-commit@*")
+    os.system("poetry add pytest@*")
     os.system("poetry update")
     os.system("poetry run pre-commit install")
     os.system("poetry run pre-commit autoupdate")
