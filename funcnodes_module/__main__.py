@@ -3,6 +3,32 @@ import os
 import shutil
 
 
+def _init_git(
+    path,
+):
+    current_dir = os.getcwd()
+    os.chdir(path)
+    # initialize git
+    os.system("git init")
+    os.system('git commit --allow-empty -m "initial commit"')
+    # create a dev and test branch
+    os.system("git checkout -b test")
+    os.system('git commit --allow-empty -m "initial commit"')
+    os.system("git checkout -b dev")
+
+    # # add all files
+
+    os.system("poetry install")
+    os.system("poetry add pre-commit@* --group=dev")
+    os.system("poetry add pytest@* --group=dev")
+    os.system("poetry run pre-commit install")
+    os.system("poetry run pre-commit autoupdate")
+
+    os.system("git add .")
+    os.system('git commit -m "initial commit"')
+    os.chdir(current_dir)
+
+
 def create_new_project(name, path, with_react=False):
     basepath = os.path.join(path, name)
     print(f"Creating project {name} at {basepath}")
@@ -58,22 +84,8 @@ def create_new_project(name, path, with_react=False):
     # cd into the project folder
     os.chdir(basepath)
 
-    # initialize git
-    os.system("git init")
-    os.system('git commit --allow-empty -m "initial commit"')
-    # create a dev and test branch
-    os.system("git checkout -b test")
-    os.system('git commit --allow-empty -m "initial commit"')
-    os.system("git checkout -b dev")
-
-    # # add all files
-
-    os.system("poetry install")
-    os.system("poetry run pre-commit install")
-    os.system("poetry run pre-commit autoupdate")
-
-    os.system("git add .")
-    os.system('git commit -m "initial commit"')
+    # init git
+    _init_git(basepath)
 
 
 def update_project(path):
@@ -145,11 +157,34 @@ def update_project(path):
         with open(os.path.join(path, "pyproject.toml"), "w") as f:
             f.write(content)
 
-    os.system("poetry add pre-commit@* --group=dev")
-    os.system("poetry add pytest@* --group=dev")
-    os.system("poetry update")
-    os.system("poetry run pre-commit install")
-    os.system("poetry run pre-commit autoupdate")
+    # check if the project is already in git
+    if not os.path.exists(os.path.join(path, ".git")):
+        _init_git(path)
+    else:
+        os.system("poetry add pre-commit@* --group=dev")
+        os.system("poetry add pytest@* --group=dev")
+        os.system("poetry update")
+        os.system("poetry run pre-commit install")
+        os.system("poetry run pre-commit autoupdate")
+
+    # check if the git branch dev and test exist
+    current_dir = os.getcwd()
+    os.chdir(path)
+    branches = [
+        s.strip().strip("*").strip()
+        for s in os.popen("git branch").read().strip().split("\n")
+    ]
+    if "dev" not in branches:
+        os.system("git reset")
+        os.system("git checkout -b dev")
+        os.system('git commit --allow-empty -m "initial commit"')
+
+    if "test" not in branches:
+        os.system("git reset")
+        os.system("git checkout -b test")
+        os.system('git commit --allow-empty -m "initial commit"')
+
+    os.chdir(current_dir)
 
 
 def main():
