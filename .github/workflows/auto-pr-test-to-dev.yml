@@ -6,10 +6,7 @@ jobs:
   create-pull-request:
     runs-on: ubuntu-latest
     if: |
-      github.event.pull_request.merged == true &&
-      github.event.pull_request.base.ref == 'dev' &&
-      github.event.pull_request.head.ref != 'main' &&
-      github.event.pull_request.head.ref != 'test' &&
+      github.ref == 'refs/heads/dev' &&
       !contains(github.event.pull_request.labels.*.name, 'autopr')
     steps:
       - name: Checkout Repository
