@@ -5,9 +5,7 @@ on: workflow_call
 jobs:
   create-pull-request:
     runs-on: ubuntu-latest
-    if: |
-      github.ref == 'refs/heads/dev' &&
-      !contains(github.event.pull_request.labels.*.name, 'autopr')
+    if: github.ref == 'refs/heads/dev'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
