@@ -43,9 +43,8 @@ jobs:
       - name: Install Dependencies
         id: poetry_install
         run: |
-          poetry install
+          poetry install  --no-interaction
 
       - name: Run Tests
         if: steps.poetry_install.conclusion == 'success'
-        run: |
-          python -m unittest discover  # Replace with your test command if different (e.g., pytest)
+        run: poetry run pytest
