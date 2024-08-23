@@ -14,8 +14,8 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          base: dev
-          branch: test
+          base: test
+          branch: dev
           title: "Automated PR: Sync Test with Dev"
           body: "This PR was automatically created to sync the `test` branch with the latest changes in `dev`."
           commit-message: "Auto-sync Test with Dev"
