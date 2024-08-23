@@ -21,6 +21,7 @@ jobs:
         id: setup_python
         with:
           python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
 
       - name: Install Poetry
         run: |
