@@ -100,6 +100,8 @@ def update_project(path):
     ]
     for file in files_to_overwrite:
         filepath = os.path.join(path, file)
+        if not os.path.exists(os.path.dirname(filepath)):
+            os.makedirs(os.path.dirname(filepath))
         shutil.copy2(os.path.join(template_path, file), filepath)
         with open(filepath, "r") as f:
             content = f.read()
@@ -110,10 +112,13 @@ def update_project(path):
 
     files_to_copy_if_missing = [
         os.path.join("tests", "test_all_nodes.py"),
+        os.path.join(".pre-commit-config.yaml"),
     ]
     for file in files_to_copy_if_missing:
         if not os.path.exists(os.path.join(path, file)):
             filepath = os.path.join(path, file)
+            if not os.path.exists(os.path.dirname(filepath)):
+                os.makedirs(os.path.dirname(filepath))
             shutil.copy2(os.path.join(template_path, file), filepath)
             with open(filepath, "r") as f:
                 content = f.read()
@@ -135,6 +140,11 @@ def update_project(path):
         )
         with open(os.path.join(path, "pyproject.toml"), "w") as f:
             f.write(content)
+
+    os.system("poetry add pre-commit@*")
+    os.system("poetry update")
+    os.system("poetry run pre-commit install")
+    os.system("poetry run pre-commit autoupdate")
 
 
 def main():

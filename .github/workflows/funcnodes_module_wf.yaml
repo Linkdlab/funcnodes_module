@@ -5,9 +5,9 @@ on: workflow_call
 jobs:
   python-tests:
     if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/test' || github.ref == 'refs/heads/main'
-    uses: Linkdlab/common_workflows/.github/workflows/py_test.yml@main
+    uses: Linkdlab/funcnodes_module/.github/workflows/py_test.yml@main
 
   auto-pr:
     if: github.ref == 'refs/heads/test'
     needs: [python-tests]
-    uses: Linkdlab/common_workflows/.github/workflows/auto-pr-test-to-dev.yml@main
+    uses: Linkdlab/funcnodes_module/.github/workflows/auto-pr-test-to-dev.yml@main

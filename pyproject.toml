@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "funcnodes-module"
+version = "0.1.0"
+description = ""
+authors = ["Julian Kimmig <julian.kimmig@gmx.net>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry.scripts]
+funcnodes-module = 'funcnodes_module.__main__:main'
