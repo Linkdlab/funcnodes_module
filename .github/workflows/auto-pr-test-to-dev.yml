@@ -10,7 +10,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          ref: test # Explicitly check out the test branch
+          ref: dev # Explicitly check out the test branch
 
       - name: Create Pull Request from Test to Dev
         uses: peter-evans/create-pull-request@v5
@@ -19,4 +19,4 @@ jobs:
           title: "Automated PR: Sync Test with Dev"
           body: "This PR was automatically created to sync the `test` branch with the latest changes in `dev`."
           commit-message: "Auto-sync Test with Dev"
-          branch: test-dev-sync
+          branch: test
