@@ -11,6 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.11", "3.12", "3.13"]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
       - name: Checkout Repository
@@ -40,12 +41,11 @@ jobs:
         name: Define a cache for the virtual environment based on the dependencies lock file
         with:
           path: ./.venv
-          key: venv-${{ hashFiles('poetry.lock') }}-${{ steps.setup_python.outputs.python-version }}
+          key: venv-${{ hashFiles('poetry.lock') }}-${{ steps.setup_python.outputs.python-version }}-${{ runner.os }}
 
       - name: Install Dependencies
         id: poetry_install
         run: |
           poetry install  --no-interaction
       - name: Run Tests
-
         run: poetry run pytest
