@@ -1,0 +1,2 @@
+- publish project to github or similar
+- if possible potect the main and test branches against direct pushes
