@@ -3,7 +3,7 @@ import os
 import shutil
 
 
-def create_new_project(name, path):
+def create_new_project(name, path, with_react=False):
     basepath = os.path.join(path, name)
     print(f"Creating project {name} at {basepath}")
     if os.path.exists(basepath) and os.path.isdir(basepath):
@@ -41,6 +41,10 @@ def create_new_project(name, path):
             content = content.replace("{{ git_email }}", git_email)
             with open(filepath, "w") as f:
                 f.write(content)
+
+    if not with_react:
+        reactfolder = os.path.join(basepath, "react_plugin")
+        shutil.rmtree(reactfolder)
 
     # rename the new_package folder to the project name
     os.rename(os.path.join(basepath, "new_package"), os.path.join(basepath, name))
@@ -141,8 +145,8 @@ def update_project(path):
         with open(os.path.join(path, "pyproject.toml"), "w") as f:
             f.write(content)
 
-    os.system("poetry add pre-commit@*")
-    os.system("poetry add pytest@*")
+    os.system("poetry add pre-commit@* --group=dev")
+    os.system("poetry add pytest@* --group=dev")
     os.system("poetry update")
     os.system("poetry run pre-commit install")
     os.system("poetry run pre-commit autoupdate")
@@ -158,6 +162,11 @@ def main():
     new_project_parser.add_argument(
         "--path", help="Path to create the project", default=os.getcwd()
     )
+    new_project_parser.add_argument(
+        "--with_react",
+        help="Add the templates for the react plugin",
+        action="store_true",
+    )
 
     update_project_parser = subparsers.add_parser(
         "update", help="Update an existing project"
@@ -169,7 +178,7 @@ def main():
     args = argparser.parse_args()
 
     if args.task == "new":
-        create_new_project(args.name, args.path)
+        create_new_project(args.name, args.path, args.with_react)
     elif args.task == "update":
         update_project(args.path)
     else:
