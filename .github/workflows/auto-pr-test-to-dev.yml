@@ -1,9 +1,6 @@
 name: Auto Pull Request from Test to Dev
 
-on:
-  push:
-    branches:
-      - dev
+on: workflow_call
 
 jobs:
   create-pull-request:
