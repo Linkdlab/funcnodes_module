@@ -14,8 +14,10 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          base: test
-          branch: dev
+          base: test # The branch you want to merge into
+          branch: dev # The branch you want to merge from
           title: "Automated PR: Sync Test with Dev"
           body: "This PR was automatically created to sync the `test` branch with the latest changes in `dev`."
           commit-message: "Auto-sync Test with Dev"
+          branch: sync-dev-to-test-branch # The branch name to create for the PR
+          delete-branch: true # Deletes the branch after the PR is merged
