@@ -8,6 +8,6 @@ jobs:
     uses: Linkdlab/funcnodes_module/.github/workflows/py_test.yml@main
 
   auto-pr:
-    if: github.ref == 'refs/heads/test'
+    if: github.ref == 'refs/heads/dev'
     needs: [python-tests]
     uses: Linkdlab/funcnodes_module/.github/workflows/auto-pr-test-to-dev.yml@main
