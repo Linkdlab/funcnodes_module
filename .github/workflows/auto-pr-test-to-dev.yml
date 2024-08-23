@@ -9,15 +9,16 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          ref: dev # Explicitly check out the dev branch
 
       - name: Create Pull Request from Test to Dev
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          base: test # The branch you want to merge into
-          branch: dev # The branch you want to merge from
           title: "Automated PR: Sync Test with Dev"
           body: "This PR was automatically created to sync the `test` branch with the latest changes in `dev`."
           commit-message: "Auto-sync Test with Dev"
+          base: test # The branch you want to merge into (test branch)
           branch: sync-dev-to-test-branch # The branch name to create for the PR
           delete-branch: true # Deletes the branch after the PR is merged
