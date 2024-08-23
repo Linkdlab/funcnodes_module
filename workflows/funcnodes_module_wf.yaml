@@ -1,0 +1,10 @@
+name: Combined Workflow
+
+on: [push, pull_request]
+
+jobs:
+  auto-pr:
+    uses: Linkdlab/common_workflows/workflows/auto-pr.yml@main
+
+  python-tests:
+    uses: Linkdlab/common_workflows/workflows/python-tests.yml@main
