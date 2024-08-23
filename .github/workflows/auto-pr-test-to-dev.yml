@@ -1,0 +1,29 @@
+name: Auto Pull Request from Test to Dev
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.base.ref == 'dev' &&
+      github.event.pull_request.head.ref != 'main' &&
+      github.event.pull_request.head.ref != 'test' &&
+      !contains(github.event.pull_request.labels.*.name, 'autopr')
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Create Pull Request from Test to Dev
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: dev
+          head: test
+          title: "Automated PR: Sync Test with Dev"
+          body: "This PR was automatically created to sync the `test` branch with the latest changes in `dev`."
+          commit-message: "Auto-sync Test with Dev"
