@@ -7,6 +7,7 @@ inputs:
 
 runs:
   using: "composite"
+
   steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
@@ -19,10 +20,13 @@ runs:
         allow-prereleases: true
 
     - name: Install Poetry
+      shell: bash
       run: |
         python -m pip install --upgrade pip
         pip install poetry
+
     - name: Setup a local virtual environment (if no poetry.toml file)
+      shell: bash
       run: |
         poetry config virtualenvs.create true --local
         poetry config virtualenvs.in-project true --local
@@ -34,11 +38,13 @@ runs:
         key: venv-${{ hashFiles('poetry.lock') }}-${{ steps.setup_python.outputs.python-version }}-${{ runner.os }}
 
     - name: Install Dependencies
+      shell: bash
       id: poetry_install
       run: |
         poetry install  --no-interaction
 
     - name: Get current package version
+      shell: bash
       id: get_version
       run: |
         CURRENT_VERSION=$(poetry version --short)
@@ -46,6 +52,7 @@ runs:
         echo "CURRENT_VERSION=${CURRENT_VERSION}"
 
     - name: Get latest version from PyPI
+      shell: bash
       id: get_pypi_version
       run: |
         PACKAGE_NAME=$(poetry version | awk '{print $1}')
@@ -54,6 +61,7 @@ runs:
         echo "LATEST_VERSION=${LATEST_VERSION}"
 
     - name: Compare versions
+      shell: bash
       id: compare_versions
       run: |
         if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
@@ -63,6 +71,7 @@ runs:
         fi
 
     - name: Publish
+      shell: bash
       env:
         POETRY_PYPI_TOKEN_PYPI: ${{ inputs.pypi_token }}
       run: |
@@ -70,6 +79,7 @@ runs:
         poetry publish --build
 
     - name: Check if tag exists
+      shell: bash
       id: check_tag
       run: |
         TAG_EXISTS=$(git tag -l "v$CURRENT_VERSION")
@@ -80,6 +90,7 @@ runs:
           fi
 
     - name: Create new tag
+      shell: bash
       if: steps.check_tag.outputs.tag_exists == 'false'
       run: |
         git tag v$CURRENT_VERSION
