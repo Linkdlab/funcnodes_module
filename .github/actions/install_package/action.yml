@@ -10,7 +10,7 @@ runs:
 
   steps:
     - name: Set up Python
-      uses: ./.github/actions/updates_version
+      uses: ./.github/actions/cache_py
       with:
         python_version: ${{ inputs.python_version }}
       id: setup_python_cached
