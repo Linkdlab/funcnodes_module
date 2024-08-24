@@ -2,10 +2,6 @@ import os
 import tempfile
 
 
-def get_current_git_branch():
-    return os.popen("git branch --show-current").read().strip()
-
-
 def check_funcnodes_module():
     # check that [tool.poetry.plugins."funcnodes.module"] exists in pyproject.toml
     with open("pyproject.toml") as f:
@@ -35,9 +31,6 @@ def check_for_register(path=None):
         path = os.getcwd()
     opath = os.getcwd()
     os.chdir(path)
-    # assert that the current git branch is main
-    if not get_current_git_branch() == "main":
-        raise ValueError("You must be on the main branch to register a new module")
 
     check_funcnodes_module()
 
