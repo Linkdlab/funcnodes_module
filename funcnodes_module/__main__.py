@@ -268,6 +268,11 @@ def main():
         "path", help="Path to the project", default=os.getcwd()
     )
 
+    check_for_register_parser = subparsers.add_parser(
+        "check_for_register",
+        help="Check if the current project is ready for registration",
+    )
+
     args = argparser.parse_args()
 
     if args.task == "new":

@@ -5,8 +5,7 @@ on:
   push:
     tags:
       - "v*" # This triggers the workflow when a new version tag is pushed
-    branches:
-      - main
+
   workflow_dispatch:
 
 jobs:
