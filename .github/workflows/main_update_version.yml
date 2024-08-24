@@ -63,6 +63,13 @@ jobs:
             echo "should_update=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Publish
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          poetry config pypi-token.pypi $PYPI_TOKEN
+          poetry publish --build
+
       - name: Check if tag exists
         id: check_tag
         run: |
@@ -86,9 +93,3 @@ jobs:
       #     git add pyproject.toml
       #     git commit -m "Bump version to $CURRENT_VERSION"
       #     git push origin HEAD
-
-      # - name: Create new tag
-      #   if: steps.compare_versions.outputs.should_update == 'true'
-      #   run: |
-      #     git tag v$CURRENT_VERSION
-      #     git push origin v$CURRENT_VERSION
