@@ -63,6 +63,22 @@ jobs:
             echo "should_update=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          TAG_EXISTS=$(git tag -l "v$CURRENT_VERSION")
+          if [ "$TAG_EXISTS" ]; then
+            echo "::set-output name=tag_exists::true"
+          else
+            echo "::set-output name=tag_exists::false"
+            fi
+
+      - name: Create new tag
+        if: steps.check_tag.outputs.tag_exists == 'false'
+        run: |
+          git tag v$CURRENT_VERSION
+          git push origin v$CURRENT_VERSION
+
       # - name: Update version and push
       #   if: steps.compare_versions.outputs.should_update == 'true'
       #   run: |
