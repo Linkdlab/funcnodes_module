@@ -44,6 +44,7 @@ jobs:
         run: |
           CURRENT_VERSION=$(poetry version --short)
           echo "CURRENT_VERSION=${CURRENT_VERSION}" >> $GITHUB_ENV
+          echo "CURRENT_VERSION=${CURRENT_VERSION}"
 
       - name: Get latest version from PyPI
         id: get_pypi_version
@@ -51,14 +52,15 @@ jobs:
           PACKAGE_NAME=$(poetry version | awk '{print $1}')
           LATEST_VERSION=$(curl -s https://pypi.org/pypi/$PACKAGE_NAME/json | jq -r .info.version)
           echo "LATEST_VERSION=${LATEST_VERSION}" >> $GITHUB_ENV
+          echo "LATEST_VERSION=${LATEST_VERSION}"
 
       - name: Compare versions
         id: compare_versions
         run: |
           if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
-            echo "::set-output name=should_update::true"
+            echo "should_update=true" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=should_update::false"
+            echo "should_update=false" >> $GITHUB_OUTPUT
           fi
 
       # - name: Update version and push
