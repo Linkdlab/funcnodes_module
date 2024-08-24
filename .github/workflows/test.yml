@@ -7,6 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: vb
-        uses: ./actions/workflows/updates_version
+        uses: ./actions/updates_version
         with:
           pypi_token: ${{ secrets.PYPI_TOKEN }}
