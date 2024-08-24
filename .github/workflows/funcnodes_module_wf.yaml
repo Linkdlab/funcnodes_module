@@ -12,8 +12,7 @@ jobs:
     needs: [python-tests]
     uses: Linkdlab/funcnodes_module/.github/workflows/auto-pr-test-to-dev.yml@main
 
-
-  auto-pr:
+  vers_bump:
     if: github.ref == 'refs/heads/main'
     needs: [python-tests]
     uses: Linkdlab/funcnodes_module/.github/workflows/main_update_version.yml@main
