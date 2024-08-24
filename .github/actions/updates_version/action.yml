@@ -44,6 +44,7 @@ runs:
 
     - name: Publish
       shell: bash
+      if: steps.compare_versions.outputs.should_update == 'true'
       env:
         POETRY_PYPI_TOKEN_PYPI: ${{ inputs.pypi_token }}
       run: |
