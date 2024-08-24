@@ -2,6 +2,21 @@ import argparse
 import os
 import shutil
 
+template_path = os.path.join(os.path.dirname(__file__), "template_folder")
+files_to_overwrite = [
+    os.path.join(".github", "workflows", "py_test.yml"),
+    os.path.join(".github", "workflows", "version_publish_main.yml"),
+    os.path.join(".github", "actions", "cache_py", "action.yml"),
+    os.path.join(".github", "actions", "updates_version", "action.yml"),
+    os.path.join(".github", "actions", "install_package", "action.yml"),
+    os.path.join("tests", "all_nodes_test_base.py"),
+]
+
+files_to_copy_if_missing = [
+    os.path.join("tests", "test_all_nodes.py"),
+    os.path.join(".pre-commit-config.yaml"),
+]
+
 
 def _init_git(
     path,
@@ -58,6 +73,7 @@ def replace_names(
 
 
 def create_new_project(name, path, with_react=False):
+    startpath = os.getcwd()
     basepath = os.path.join(path, name)
     module_name = name.replace(" ", "_").replace("-", "_").lower()
     package_name = module_name.replace("_", "-")
@@ -74,7 +90,6 @@ def create_new_project(name, path, with_react=False):
             print(f"Project {name} already exists but is empty")
             os.rmdir(basepath)
 
-    template_path = os.path.join(os.path.dirname(__file__), "template_folder")
     shutil.copytree(template_path, basepath)
 
     # get current git user
@@ -125,21 +140,22 @@ def create_new_project(name, path, with_react=False):
     # init git
     _init_git(basepath)
 
+    os.chdir(startpath)
+
 
 def update_project(path):
     # check if path is a project
+    path = os.path.abspath(path)
+
     if not os.path.exists(path):
-        print(f"Path {path} does not exist")
-        return
+        raise RuntimeError(f"Path {path} does not exist")
 
     if not os.path.isdir(path):
-        print(f"Path {path} is not a directory")
-        return
+        raise RuntimeError(f"Path {path} is not a directory")
 
     if not os.path.exists(os.path.join(path, "pyproject.toml")):
-        print(f"Path {path} is not a project")
-        return
-    path = os.path.abspath(path)
+        raise RuntimeError(f"Path {path} is not a project")
+
     name = os.path.basename(path)
     project_name, module_name, package_name = create_names(name)
 
@@ -152,11 +168,6 @@ def update_project(path):
             print(f"Project at {path} does not seem to be a funcnodes project")
             return
 
-    template_path = os.path.join(os.path.dirname(__file__), "template_folder")
-    files_to_overwrite = [
-        os.path.join(".github", "workflows", "funcnodes_module_wf.yaml"),
-        os.path.join("tests", "all_nodes_test_base.py"),
-    ]
     for file in files_to_overwrite:
         filepath = os.path.join(path, file)
         if not os.path.exists(os.path.dirname(filepath)):
@@ -173,10 +184,6 @@ def update_project(path):
         with open(filepath, "w") as f:
             f.write(content)
 
-    files_to_copy_if_missing = [
-        os.path.join("tests", "test_all_nodes.py"),
-        os.path.join(".pre-commit-config.yaml"),
-    ]
     for file in files_to_copy_if_missing:
         if not os.path.exists(os.path.join(path, file)):
             filepath = os.path.join(path, file)
