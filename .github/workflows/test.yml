@@ -7,6 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: vb
-        uses: Linkdlab/funcnodes_module/actions/workflows/updates_version@main
+        uses: ./actions/workflows/updates_version
         with:
           pypi_token: ${{ secrets.PYPI_TOKEN }}
