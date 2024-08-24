@@ -9,6 +9,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
       - name: vb
-        uses: ./actions/updates_version
+        uses: ./.github/actions/updates_version
         with:
           pypi_token: ${{ secrets.PYPI_TOKEN }}
