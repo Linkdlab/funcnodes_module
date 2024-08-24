@@ -4,9 +4,6 @@ version = "0.1.0"
 description = ""
 authors = []
 readme = "README.md"
-classifiers = [
-    "Framework :: Funcnodes :: Module",
-]
 
 [tool.poetry.dependencies]
 python = "^3.11"
