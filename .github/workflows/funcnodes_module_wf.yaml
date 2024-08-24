@@ -1,7 +1,12 @@
 name: Combined Workflow
 
-on: workflow_call
-
+on:
+  workflow_call:
+    inputs:
+      pypi_token:
+        description: "PyPI API token"
+        required: true
+        type: string
 jobs:
   python-tests:
     if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/test' || github.ref == 'refs/heads/main'
@@ -16,3 +21,5 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs: [python-tests]
     uses: Linkdlab/funcnodes_module/.github/workflows/main_update_version.yml@main
+    with:
+      pypi_token: ${{ inputs.pypi_token }}

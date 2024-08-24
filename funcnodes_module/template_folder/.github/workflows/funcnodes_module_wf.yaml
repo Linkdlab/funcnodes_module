@@ -6,3 +6,5 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   wf:
     uses: Linkdlab/funcnodes_module/.github/workflows/funcnodes_module_wf.yaml@main
+    with:
+      pypi_token: ${{ secrets.PYPI_TOKEN }}
