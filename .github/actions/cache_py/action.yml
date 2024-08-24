@@ -2,8 +2,8 @@ name: cache_py
 description: Installs python, pip and poetry and caches the python environment
 inputs:
   python_version:
-  description: "Python version to install"
-  required: true
+    description: "Python version to install"
+    required: true
 
 runs:
   using: "composite"
