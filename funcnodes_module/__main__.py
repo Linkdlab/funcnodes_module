@@ -7,6 +7,7 @@ template_path = os.path.join(os.path.dirname(__file__), "template_folder")
 files_to_overwrite = [
     os.path.join(".github", "workflows", "py_test.yml"),
     os.path.join(".github", "workflows", "version_publish_main.yml"),
+    os.path.join(".github", "workflows", "register_plugin.yml"),
     os.path.join(".github", "actions", "cache_py", "action.yml"),
     os.path.join(".github", "actions", "updates_version", "action.yml"),
     os.path.join(".github", "actions", "install_package", "action.yml"),
