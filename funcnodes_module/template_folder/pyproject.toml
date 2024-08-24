@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "{{ project_name }}"
+name = "{{ package-name }}"
 version = "0.1.0"
 description = ""
 authors = []
@@ -20,5 +20,5 @@ build-backend = "poetry.core.masonry.api"
 
 
 [tool.poetry.plugins."funcnodes.module"]
-module = "{{ project_name }}"
-shelf = "{{ project_name }}:NODE_SHELF"
+module = "{{ module_name }}"
+shelf = "{{ module_name }}:NODE_SHELF"

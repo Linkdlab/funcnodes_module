@@ -1,6 +1,6 @@
 from all_nodes_test_base import TestAllNodesBase
 import funcnodes as fn
-import {{ project_name }} as fnmodule
+import {{ module_name }} as fnmodule
 import dataclasses
 
 

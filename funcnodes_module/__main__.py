@@ -29,8 +29,41 @@ def _init_git(
     os.chdir(current_dir)
 
 
+def create_names(name):
+    project_name = name.replace("_", " ").replace("-", " ").title()
+    module_name = name.replace(" ", "_").replace("-", "_").lower()
+    package_name = module_name.replace("_", "-")
+    return project_name, module_name, package_name
+
+
+def replace_names(
+    content,
+    project_name=None,
+    module_name=None,
+    package_name=None,
+    git_user=None,
+    git_email=None,
+):
+    if module_name:
+        content = content.replace("{{ module_name }}", module_name)
+    if package_name:
+        content = content.replace("{{ package-name }}", package_name)
+    if project_name:
+        content = content.replace("{{ Project Name }}", project_name)
+    if git_user:
+        content = content.replace("{{ git_user }}", git_user)
+    if git_email:
+        content = content.replace("{{ git_email }}", git_email)
+    return content
+
+
 def create_new_project(name, path, with_react=False):
     basepath = os.path.join(path, name)
+    module_name = name.replace(" ", "_").replace("-", "_").lower()
+    package_name = module_name.replace("_", "-")
+
+    project_name, module_name, package_name = create_names(name)
+
     print(f"Creating project {name} at {basepath}")
     if os.path.exists(basepath) and os.path.isdir(basepath):
         # check if empty
@@ -59,12 +92,14 @@ def create_new_project(name, path, with_react=False):
             filepath = os.path.join(root, file)
             with open(filepath, "r") as f:
                 content = f.read()
-            content = content.replace("{{ project_name }}", name)
-            content = content.replace(
-                "{{ Project Name }}", name.replace("_", " ").title()
+            content = replace_names(
+                content,
+                project_name=project_name,
+                module_name=module_name,
+                package_name=package_name,
+                git_user=git_user,
+                git_email=git_email,
             )
-            content = content.replace("{{ git_user }}", git_user)
-            content = content.replace("{{ git_email }}", git_email)
             with open(filepath, "w") as f:
                 f.write(content)
 
@@ -73,7 +108,10 @@ def create_new_project(name, path, with_react=False):
         shutil.rmtree(reactfolder)
 
     # rename the new_package folder to the project name
-    os.rename(os.path.join(basepath, "new_package"), os.path.join(basepath, name))
+    os.rename(
+        os.path.join(basepath, "new_package"),
+        os.path.join(basepath, module_name),
+    )
 
     # rename all files starting with "template__" by removing the "template__" prefix
     for root, dirs, files in os.walk(basepath):
@@ -103,6 +141,11 @@ def update_project(path):
         return
     path = os.path.abspath(path)
     name = os.path.basename(path)
+    project_name, module_name, package_name = create_names(name)
+
+    if not os.path.exists(os.path.join(path, module_name)):
+        print(f"Cant find module {module_name} in project {name}")
+        return
     # check if funcnodes is in the project
     with open(os.path.join(path, "pyproject.toml")) as f:
         if "funcnodes" not in f.read():
@@ -121,8 +164,12 @@ def update_project(path):
         shutil.copy2(os.path.join(template_path, file), filepath)
         with open(filepath, "r") as f:
             content = f.read()
-        content = content.replace("{{ project_name }}", name)
-        content = content.replace("{{ Project Name }}", name.replace("_", " ").title())
+        content = replace_names(
+            content,
+            project_name=project_name,
+            module_name=module_name,
+            package_name=package_name,
+        )
         with open(filepath, "w") as f:
             f.write(content)
 
@@ -138,10 +185,13 @@ def update_project(path):
             shutil.copy2(os.path.join(template_path, file), filepath)
             with open(filepath, "r") as f:
                 content = f.read()
-            content = content.replace("{{ project_name }}", name)
-            content = content.replace(
-                "{{ Project Name }}", name.replace("_", " ").title()
+            content = replace_names(
+                content,
+                project_name=project_name,
+                module_name=module_name,
+                package_name=package_name,
             )
+
             with open(filepath, "w") as f:
                 f.write(content)
 
