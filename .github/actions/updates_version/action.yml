@@ -65,5 +65,7 @@ runs:
       shell: bash
       if: steps.check_tag.outputs.tag_exists == 'false'
       run: |
+        git config --local user.name "${GITHUB_ACTOR}"
+        git config --local user.email "${GITHUB_ACTOR}@users.noreply.github.com"
         git tag -a v$CURRENT_VERSION -m "Release version $CURRENT_VERSION"
         git push origin v$CURRENT_VERSION
