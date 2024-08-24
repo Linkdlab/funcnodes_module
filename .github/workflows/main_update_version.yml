@@ -68,9 +68,9 @@ jobs:
         run: |
           TAG_EXISTS=$(git tag -l "v$CURRENT_VERSION")
           if [ "$TAG_EXISTS" ]; then
-            echo "::set-output name=tag_exists::true"
+            echo "tag_exists=true" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=tag_exists::false"
+            echo "tag_exists=false" >> $GITHUB_OUTPUT
             fi
 
       - name: Create new tag
