@@ -1,6 +1,7 @@
 import argparse
 import os
 import shutil
+from . import register
 
 template_path = os.path.join(os.path.dirname(__file__), "template_folder")
 files_to_overwrite = [
@@ -273,6 +274,8 @@ def main():
         create_new_project(args.name, args.path, args.with_react)
     elif args.task == "update":
         update_project(args.path)
+    elif args.task == "check_for_register":
+        register.check_for_register()
     else:
         print("Invalid task")
 
