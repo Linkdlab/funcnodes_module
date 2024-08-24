@@ -1,0 +1,94 @@
+name: Check and Update Version
+description: Check if the current version is the latest on PyPI and update it if it is not.
+inputs:
+  pypi_token:
+    description: "PyPI API token"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      id: setup_python
+      with:
+        python-version: 3.12
+        allow-prereleases: true
+
+    - name: Install Poetry
+      run: |
+        python -m pip install --upgrade pip
+        pip install poetry
+    - name: Setup a local virtual environment (if no poetry.toml file)
+      run: |
+        poetry config virtualenvs.create true --local
+        poetry config virtualenvs.in-project true --local
+
+    - uses: actions/cache@v3
+      name: Define a cache for the virtual environment based on the dependencies lock file
+      with:
+        path: ./.venv
+        key: venv-${{ hashFiles('poetry.lock') }}-${{ steps.setup_python.outputs.python-version }}-${{ runner.os }}
+
+    - name: Install Dependencies
+      id: poetry_install
+      run: |
+        poetry install  --no-interaction
+
+    - name: Get current package version
+      id: get_version
+      run: |
+        CURRENT_VERSION=$(poetry version --short)
+        echo "CURRENT_VERSION=${CURRENT_VERSION}" >> $GITHUB_ENV
+        echo "CURRENT_VERSION=${CURRENT_VERSION}"
+
+    - name: Get latest version from PyPI
+      id: get_pypi_version
+      run: |
+        PACKAGE_NAME=$(poetry version | awk '{print $1}')
+        LATEST_VERSION=$(curl -s https://pypi.org/pypi/$PACKAGE_NAME/json | jq -r .info.version)
+        echo "LATEST_VERSION=${LATEST_VERSION}" >> $GITHUB_ENV
+        echo "LATEST_VERSION=${LATEST_VERSION}"
+
+    - name: Compare versions
+      id: compare_versions
+      run: |
+        if [ "$CURRENT_VERSION" != "$LATEST_VERSION" ]; then
+          echo "should_update=true" >> $GITHUB_OUTPUT
+        else
+          echo "should_update=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Publish
+      env:
+        POETRY_PYPI_TOKEN_PYPI: ${{ inputs.pypi_token }}
+      run: |
+        echo -n "$POETRY_PYPI_TOKEN_PYPI"|wc -mc
+        poetry publish --build
+
+    - name: Check if tag exists
+      id: check_tag
+      run: |
+        TAG_EXISTS=$(git tag -l "v$CURRENT_VERSION")
+        if [ "$TAG_EXISTS" ]; then
+          echo "tag_exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "tag_exists=false" >> $GITHUB_OUTPUT
+          fi
+
+    - name: Create new tag
+      if: steps.check_tag.outputs.tag_exists == 'false'
+      run: |
+        git tag v$CURRENT_VERSION
+        git push origin v$CURRENT_VERSION
+
+    # - name: Update version and push
+    #   if: steps.compare_versions.outputs.should_update == 'true'
+    #   run: |
+    #     poetry version $(poetry version patch)
+    #     git add pyproject.toml
+    #     git commit -m "Bump version to $CURRENT_VERSION"
+    #     git push origin HEAD
