@@ -26,9 +26,7 @@ def funcnodes_module_name():
     raise ValueError("Could not find name in pyproject.toml")
 
 
-def check_for_register(path=None):
-    if path is None:
-        path = os.getcwd()
+def check_for_register(path):
     opath = os.getcwd()
     os.chdir(path)
 

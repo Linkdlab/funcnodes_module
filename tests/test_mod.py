@@ -2,9 +2,12 @@ import unittest
 import os
 import tempfile
 
-from funcnodes_module.__main__ import (
+from funcnodes_module import (
     create_new_project,
     update_project,
+)
+
+from funcnodes_module.config import (
     files_to_copy_if_missing,
     files_to_overwrite,
     template_path,
