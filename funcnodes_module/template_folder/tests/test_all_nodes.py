@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__))) # in case test folder is not in sys path
+
 from all_nodes_test_base import TestAllNodesBase
 import funcnodes as fn
 import {{ module_name }} as fnmodule
