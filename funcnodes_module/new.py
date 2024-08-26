@@ -1,7 +1,7 @@
 import os
 import shutil
 from .config import template_path
-from .utils import create_names, replace_names
+from .utils import create_names, replace_names, read_file_content, write_file_content
 from ._git import _init_git
 
 
@@ -38,8 +38,11 @@ def create_new_project(name, path, with_react=False):
     for root, dirs, files in os.walk(basepath):
         for file in files:
             filepath = os.path.join(root, file)
-            with open(filepath, "r", encoding="utf-8") as f:
-                content = f.read()
+            try:
+                content, enc = read_file_content(filepath)
+            except UnicodeDecodeError:
+                print(f"Error reading file {filepath}")
+                continue
             content = replace_names(
                 content,
                 project_name=project_name,
@@ -48,8 +51,7 @@ def create_new_project(name, path, with_react=False):
                 git_user=git_user,
                 git_email=git_email,
             )
-            with open(filepath, "w", encoding="utf-8") as f:
-                f.write(content)
+            write_file_content(filepath, content, enc)
 
     if not with_react:
         reactfolder = os.path.join(basepath, "react_plugin")

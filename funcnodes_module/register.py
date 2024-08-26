@@ -1,18 +1,17 @@
 import os
 import tempfile
+from .utils import read, replace_names, read_file_content, write_file_content
 
 
 def check_funcnodes_module():
     # check that [tool.poetry.plugins."funcnodes.module"] exists in pyproject.toml
-    with open("pyproject.toml") as f:
-        content = f.read()
+    content, _ = read_file_content("pyproject.toml")
     if '[tool.poetry.plugins."funcnodes.module"]' not in content:
         raise ValueError("funcnodes.module missing pyproject.toml")
 
 
 def funcnodes_module_name():
-    with open("pyproject.toml") as f:
-        content = f.read()
+    content, _ = read_file_content("pyproject.toml")
     correct_block = False
     for line in content.split("\n"):
         if line.startswith("["):

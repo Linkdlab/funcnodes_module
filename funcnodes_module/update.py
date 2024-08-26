@@ -1,6 +1,6 @@
 import os
 import shutil
-from .utils import create_names, replace_names
+from .utils import create_names, replace_names, read_file_content, write_file_content
 from .config import (
     template_path,
     files_to_overwrite,
@@ -31,17 +31,18 @@ def update_project(path):
         print(f"Cant find module {module_name} in project {name}")
         return
     # check if funcnodes is in the project
-    with open(os.path.join(path, "pyproject.toml"), encoding="utf-8") as f:
-        if "funcnodes" not in f.read():
-            print(f"Project at {path} does not seem to be a funcnodes project")
-            return
+
+    content, _ = read_file_content(os.path.join(path, "pyproject.toml"))
+    if "funcnodes" not in content:
+        print(f"Project at {path} does not seem to be a funcnodes project")
+        return
 
     for file in files_to_overwrite:
         filepath = os.path.join(path, file)
         if not os.path.exists(os.path.dirname(filepath)):
             os.makedirs(os.path.dirname(filepath))
         shutil.copy2(os.path.join(template_path, file), filepath)
-        with open(filepath, "r", encoding="utf-8") as f:
+        content, enc = read_file_content(filepath)
             content = f.read()
         content = replace_names(
             content,
@@ -49,8 +50,7 @@ def update_project(path):
             module_name=module_name,
             package_name=package_name,
         )
-        with open(filepath, "w", encoding="utf-8") as f:
-            f.write(content)
+        write_file_content(filepath, content, enc)
 
     for file in files_to_copy_if_missing:
         if not os.path.exists(os.path.join(path, file)):
@@ -58,33 +58,28 @@ def update_project(path):
             if not os.path.exists(os.path.dirname(filepath)):
                 os.makedirs(os.path.dirname(filepath))
             shutil.copy2(os.path.join(template_path, file), filepath)
-            with open(filepath, "r", encoding="utf-8") as f:
-                content = f.read()
+            content, enc = read_file_content(filepath)
             content = replace_names(
                 content,
                 project_name=project_name,
                 module_name=module_name,
                 package_name=package_name,
             )
-
-            with open(filepath, "w", encoding="utf-8") as f:
-                f.write(content)
+            write_file_content(filepath, content, enc)
 
     # update requirements
     os.system(f"poetry add {' '.join(dev_requirements)} --group=dev")
     os.system(f"poetry add {' '.join(package_requirements)}")
 
     # update plugins in toml
-    with open(os.path.join(path, "pyproject.toml"), encoding="utf-8") as f:
-        content = f.read()
+    content,enc = read_file_content(os.path.join(path, "pyproject.toml"))
     if '[tool.poetry.plugins."funcnodes.module"]' not in content:
         content += (
             '\n[tool.poetry.plugins."funcnodes.module"]\n'
             f'module = "{name}"\n'
             f'shelf = "{name}:NODE_SHELF"\n'
         )
-        with open(os.path.join(path, "pyproject.toml"), "w", encoding="utf-8") as f:
-            f.write(content)
+        write_file_content(os.path.join(path, "pyproject.toml"), content, enc)
 
     # check if the project is already in git
     if not os.path.exists(os.path.join(path, ".git")):
