@@ -69,10 +69,6 @@ def create_new_project(name, path, with_react=False):
             if file.startswith("template__"):
                 new_file = file.replace("template__", "")
                 os.rename(os.path.join(root, file), os.path.join(root, new_file))
-    # cd into the project folder
-    os.chdir(basepath)
 
-    # init git
     _init_git(basepath)
 
-    os.chdir(startpath)
