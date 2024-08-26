@@ -43,7 +43,7 @@ def update_project(path):
             os.makedirs(os.path.dirname(filepath))
         shutil.copy2(os.path.join(template_path, file), filepath)
         content, enc = read_file_content(filepath)
-            content = f.read()
+
         content = replace_names(
             content,
             project_name=project_name,
@@ -72,7 +72,7 @@ def update_project(path):
     os.system(f"poetry add {' '.join(package_requirements)}")
 
     # update plugins in toml
-    content,enc = read_file_content(os.path.join(path, "pyproject.toml"))
+    content, enc = read_file_content(os.path.join(path, "pyproject.toml"))
     if '[tool.poetry.plugins."funcnodes.module"]' not in content:
         content += (
             '\n[tool.poetry.plugins."funcnodes.module"]\n'
