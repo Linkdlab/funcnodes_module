@@ -87,8 +87,9 @@ def update_project(path, nogit=False):
         _init_git(path)
     else:
         os.system("poetry update")
-        os.system("poetry run pre-commit install")
-        os.system("poetry run pre-commit autoupdate")
+        if not nogit:
+            os.system("poetry run pre-commit install")
+            os.system("poetry run pre-commit autoupdate")
 
     # check if the git branch dev and test exist
     current_dir = os.getcwd()

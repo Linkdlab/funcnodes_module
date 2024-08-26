@@ -1,22 +1,25 @@
 [tool.poetry]
-name = "funcnodes-module"
-version = "0.1.9"
+name = "testmod"
+version = "0.1.0"
 description = ""
-authors = ["Julian Kimmig <julian.kimmig@gmx.net>"]
+authors = []
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+funcnodes = "*"
+
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
+pre-commit = "*"
+funcnodes-module = "*"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 
-[tool.poetry.scripts]
-funcnodes-module = 'funcnodes_module.__main__:main'
-
-
+[tool.poetry.plugins."funcnodes.module"]
+module = "testmod"
+shelf = "testmod:NODE_SHELF"
