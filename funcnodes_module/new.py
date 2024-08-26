@@ -1,11 +1,11 @@
 import os
 import shutil
-from .config import template_path
+from .config import template_path, gitpaths
 from .utils import create_names, replace_names, read_file_content, write_file_content
 from ._git import _init_git
 
 
-def create_new_project(name, path, with_react=False):
+def create_new_project(name, path, with_react=False, nogit=False):
     startpath = os.getcwd()
     basepath = os.path.join(path, name)
     module_name = name.replace(" ", "_").replace("-", "_").lower()
@@ -70,5 +70,11 @@ def create_new_project(name, path, with_react=False):
                 new_file = file.replace("template__", "")
                 os.rename(os.path.join(root, file), os.path.join(root, new_file))
 
-    _init_git(basepath)
-
+    if not nogit:
+        _init_git(basepath)
+    else:
+        for gitpath in gitpaths:
+            gitpath = os.path.join(basepath, gitpath)
+            if os.path.exists(gitpath):
+                shutil.rmtree(gitpath)
+        # remove the .git and .gitignore

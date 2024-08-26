@@ -25,3 +25,8 @@ dev_requirements = [
     "pytest@*",
     "funcnodes-module@*",
 ]
+
+gitpaths = [
+    ".github",
+    ".git",
+]

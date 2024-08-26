@@ -11,7 +11,7 @@ from .config import (
 from ._git import _init_git
 
 
-def update_project(path):
+def update_project(path, nogit=False):
     # check if path is a project
     path = os.path.abspath(path)
 
@@ -81,8 +81,9 @@ def update_project(path):
         )
         write_file_content(os.path.join(path, "pyproject.toml"), content, enc)
 
+        # remove the .git and .gitignore
     # check if the project is already in git
-    if not os.path.exists(os.path.join(path, ".git")):
+    if not os.path.exists(os.path.join(path, ".git")) and not nogit:
         _init_git(path)
     else:
         os.system("poetry update")
