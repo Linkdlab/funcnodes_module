@@ -1,6 +1,6 @@
 import os
 import tempfile
-from .utils import read, replace_names, read_file_content, write_file_content
+from .utils import replace_names, read_file_content, write_file_content
 
 
 def check_funcnodes_module():
