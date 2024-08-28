@@ -62,7 +62,8 @@ class TestAllNodesBase(unittest.IsolatedAsyncioTestCase):
             if node in nodes_to_test:
                 nodes_to_test.remove(node)
 
-        # monkey patching the async func method in the nodeclasses that if they are called the nodeclass is removed from the NODES_TO_TEST list
+        # monkey patching the async func method in the nodeclasses that if they are called the nodeclass
+        # is removed from the NODES_TO_TEST list
         def monkey_patch_func(node_class):
             ofunc = node_class.func
             node_class.TestAllNodes_func = ofunc

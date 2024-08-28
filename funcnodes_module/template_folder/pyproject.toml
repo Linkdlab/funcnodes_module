@@ -13,7 +13,7 @@ funcnodes = ">=0.4.0"
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
 pre-commit = "*"
-funcnodes-module = "*"
+# funcnodes-module = "*"
 
 [build-system]
 requires = ["poetry-core"]
