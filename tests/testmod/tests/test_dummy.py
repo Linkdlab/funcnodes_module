@@ -1,5 +1,11 @@
 import unittest
-from testmod import node2test
+import os
+import sys
+
+sys.path.append(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+)  # in case test folder is not in sys path
+from testmod import node2test  # noqa E402
 
 
 class DummyTest(unittest.IsolatedAsyncioTestCase):

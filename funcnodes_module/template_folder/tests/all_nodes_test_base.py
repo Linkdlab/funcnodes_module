@@ -5,6 +5,7 @@ from functools import wraps
 from typing import List
 import funcnodes as fn
 
+
 def add_subclass_tests(cls):
     # Dynamically add test methods from sub_test_classes
     if not hasattr(cls, "sub_test_classes"):
