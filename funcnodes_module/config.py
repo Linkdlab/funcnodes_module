@@ -5,7 +5,6 @@ files_to_overwrite = [
     os.path.join(".github", "workflows", "py_test.yml"),
     os.path.join(".github", "workflows", "version_publish_main.yml"),
     os.path.join(".github", "actions", "cache_py", "action.yml"),
-    os.path.join(".github", "actions", "updates_version", "action.yml"),
     os.path.join(".github", "actions", "install_package", "action.yml"),
     os.path.join("tests", "all_nodes_test_base.py"),
 ]
