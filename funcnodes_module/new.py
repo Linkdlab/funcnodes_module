@@ -6,7 +6,6 @@ from ._git import _init_git
 
 
 def create_new_project(name, path, with_react=False, nogit=False):
-    startpath = os.getcwd()
     basepath = os.path.join(path, name)
     module_name = name.replace(" ", "_").replace("-", "_").lower()
     package_name = module_name.replace("_", "-")
@@ -35,7 +34,7 @@ def create_new_project(name, path, with_react=False, nogit=False):
     # in each file replace "{{ project_name }}" with name
     # and "{{ git_user }}" with git_user
     # and "{{ git_email }}" with git_email
-    for root, dirs, files in os.walk(basepath):
+    for root, _, files in os.walk(basepath):
         for file in files:
             filepath = os.path.join(root, file)
             try:
@@ -64,7 +63,7 @@ def create_new_project(name, path, with_react=False, nogit=False):
     )
 
     # rename all files starting with "template__" by removing the "template__" prefix
-    for root, dirs, files in os.walk(basepath):
+    for root, _, files in os.walk(basepath):
         for file in files:
             if file.startswith("template__"):
                 new_file = file.replace("template__", "")

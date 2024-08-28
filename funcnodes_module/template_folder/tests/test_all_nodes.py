@@ -1,15 +1,15 @@
 import sys
 import os
+from typing import List
+import unittest
+import funcnodes as fn
+import {{ module_name }} as fnmodule  # noqa
 
 sys.path.append(
     os.path.dirname(os.path.abspath(__file__))
 )  # in case test folder is not in sys path
+from all_nodes_test_base import TestAllNodesBase # noqa: E402
 
-from all_nodes_test_base import TestAllNodesBase
-from typing import List
-import unittest
-import funcnodes as fn
-import {{ module_name }} as fnmodule
 
 
 
@@ -27,7 +27,7 @@ class TestAllNodes(TestAllNodesBase):
     # But why would you do that, it will ruin the coverage?!
     # a specific use case would be ignore nodes that e.g. load a lot of data, but there we would recommend
     # to write tests with patches and not ignore them.
-    ignore_nodes: List[fn.Node] = [] 
+    ignore_nodes: List[fn.Node] = []
 
 
     async def test_first_node(self):

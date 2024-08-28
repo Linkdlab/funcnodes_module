@@ -1,6 +1,6 @@
 import argparse
 import os
-from . import register, update_project, create_new_project
+from . import update_project, create_new_project
 
 
 def main():

@@ -1,22 +1,20 @@
 import sys
 import os
+from typing import List
+import unittest
+import funcnodes as fn
+import testmod as fnmodule
 
 sys.path.append(
     os.path.dirname(os.path.abspath(__file__))
 )  # in case test folder is not in sys path
 
-from all_nodes_test_base import TestAllNodesBase
-from typing import List
-import unittest
-import funcnodes as fn
-
-from all_nodes_test_base import TestAllNodesBase
-from .test_dummy import DummyTest
-import testmod as fnmodule
+from all_nodes_test_base import TestAllNodesBase  # noqa: E402
+from .test_dummy import DummyTest  # noqa: E402
 
 
 class TestAllNodes(TestAllNodesBase):
-    ### in this test class all nodes should be triggered at least once to mark them as testing
+    # in this test class all nodes should be triggered at least once to mark them as testing
 
     # if you tests your nodes with in other test classes, add them here
     # this will automtically extend this test class with the tests in the other test classes
