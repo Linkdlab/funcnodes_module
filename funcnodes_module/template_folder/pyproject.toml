@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "{{ package-name }}"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = []
 readme = "README.md"
@@ -13,7 +13,6 @@ funcnodes = ">=0.4.0"
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
 pre-commit = "*"
-# funcnodes-module = "*"
 
 [build-system]
 requires = ["poetry-core"]
