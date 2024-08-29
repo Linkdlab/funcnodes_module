@@ -5,13 +5,14 @@ from .config import (
     template_path,
     files_to_overwrite,
     files_to_copy_if_missing,
+    files_to_overwrite_on_force,
     dev_requirements,
     package_requirements,
 )
 from ._git import _init_git
 
 
-def update_project(path, nogit=False):
+def update_project(path, nogit=False, force=False):
     # check if path is a project
     path = os.path.abspath(path)
 
@@ -37,7 +38,11 @@ def update_project(path, nogit=False):
         print(f"Project at {path} does not seem to be a funcnodes project")
         return
 
-    for file in files_to_overwrite:
+    f2over = files_to_overwrite
+    if force:
+        f2over += files_to_overwrite_on_force
+
+    for file in f2over:
         filepath = os.path.join(path, file)
         if not os.path.exists(os.path.dirname(filepath)):
             os.makedirs(os.path.dirname(filepath))
