@@ -3,8 +3,8 @@ import funcnodes_module
 import os
 
 
-class DummyTest(unittest.IsolatedAsyncioTestCase):
-    async def test_dummy(self):
+class UpdateTest(unittest.IsolatedAsyncioTestCase):
+    async def test_update(self):
         funcnodes_module.update_project(
-            os.path.abspath(os.path.dirname(__file__), "..")
+            os.path.abspath(os.path.join(os.path.dirname(__file__), "..")), nogit=True
         )
