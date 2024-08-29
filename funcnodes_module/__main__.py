@@ -7,6 +7,7 @@ def main():
     argparser = argparse.ArgumentParser()
 
     subparsers = argparser.add_subparsers(dest="task")
+    subparsers.add_parser("upgrade", help="Upgrade the funcnodes-module package")
     new_project_parser = subparsers.add_parser("new", help="Create a new project")
 
     new_project_parser.add_argument("name", help="Name of the project")
@@ -51,6 +52,12 @@ def main():
         default=os.getcwd(),
     )
 
+    update_project_parser.add_argument(
+        "--force",
+        help="Force overwrite of certain files",
+        action="store_true",
+    )
+
     # check_for_register_parser = subparsers.add_parser(
     #     "check_for_register",
     #     help="Check if the current project is ready for registration",
@@ -61,7 +68,12 @@ def main():
     if args.task == "new":
         create_new_project(args.name, args.path, args.with_react, nogit=args.nogit)
     elif args.task == "update":
-        update_project(args.path, nogit=args.nogit)
+        update_project(args.path, nogit=args.nogit, force=args.force)
+    elif args.task == "upgrade":
+        # upgrades self
+        with os.popen("pip install --upgrade funcnodes-module") as p:
+            print(p.read())
+
     # elif args.task == "check_for_register":
     #     register.check_for_register(args.path)
     else:
