@@ -88,13 +88,13 @@ funcnodes-core = "*"
 
 [[package]]
 name = "funcnodes-core"
-version = "0.1.1"
+version = "0.1.2"
 description = "core package for funcnodes"
 optional = false
 python-versions = ">=3.11"
 files = [
-    {file = "funcnodes_core-0.1.1-py3-none-any.whl", hash = "sha256:38859d01c582cd19eb460b8b1f906b9077f1b8930aa3b5aa0c4855d8b367cf63"},
-    {file = "funcnodes_core-0.1.1.tar.gz", hash = "sha256:c7d034146568a8b6c389188bb73a1e318b801146b483afb2405c498d489358c5"},
+    {file = "funcnodes_core-0.1.2-py3-none-any.whl", hash = "sha256:72820d2ff28d0b17ec583c2e71968d23b2afa03aa8c3072ef2b354108aede493"},
+    {file = "funcnodes_core-0.1.2.tar.gz", hash = "sha256:6ec4a7fe7c28ef03da957cf9fcf5886a8482ace56250df1413a8648d926d2f5c"},
 ]
 
 [package.dependencies]
