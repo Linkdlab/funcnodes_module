@@ -6,6 +6,9 @@ from typing import List
 import funcnodes as fn
 import asyncio
 
+
+
+
 def passfunc(self, *args, **kwargs):
     pass
 
@@ -94,6 +97,7 @@ class TestAllNodesBase(unittest.IsolatedAsyncioTestCase):
 
     @classmethod
     def setUpClass(cls):
+
         def get_all_nodes_classes(shelf, current=None):
             if current is None:
                 current = []
