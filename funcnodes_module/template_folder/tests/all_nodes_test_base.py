@@ -4,6 +4,7 @@ from {{ module_name }} import NODE_SHELF  # noqa
 from functools import wraps
 from typing import List
 import funcnodes as fn
+import asyncio
 
 
 def add_subclass_tests(cls):
@@ -32,13 +33,26 @@ def add_subclass_tests(cls):
                     inner_setup=inner_setup,
                     inner_teardown=inner_teardown,
                 ):
-                    def test_method_wrapper(self, *args, **kwargs):
-                        # Call the inner setup method
-                        inner_setup(self)
-                        # Call the test method
-                        test_method(self, *args, **kwargs)
-                        # Call the inner teardown method
-                        inner_teardown(self)
+                    if asyncio.iscoroutinefunction(test_method):
+
+                        async def test_method_wrapper(self, *args, **kwargs):
+                            # Call the inner setup method
+                            inner_setup(self)
+                            # Call the test method
+                            await test_method(self, *args, **kwargs)
+                            print(f"Test {test_method.__name__} passed")
+                            # Call the inner teardown method
+                            inner_teardown(self)
+                    else:
+
+                        def test_method_wrapper(self, *args, **kwargs):
+                            # Call the inner setup method
+                            inner_setup(self)
+                            # Call the test method
+                            test_method(self, *args, **kwargs)
+                            print(f"Test {test_method.__name__} passed")
+                            # Call the inner teardown method
+                            inner_teardown(self)
 
                     return test_method_wrapper
 
@@ -54,7 +68,6 @@ def add_subclass_tests(cls):
                         inner_teardown=inner_teardown,
                     ),
                 )
-
 
 
 class TestAllNodesBase(unittest.IsolatedAsyncioTestCase):
