@@ -6,7 +6,6 @@ from typing import List
 import funcnodes as fn
 import asyncio
 
-
 def passfunc(self, *args, **kwargs):
     pass
 
@@ -17,9 +16,9 @@ def add_subclass_tests(cls):
         return
     for testcase in cls.sub_test_classes:
         if hasattr(testcase, "setUp"):
-            inner_setup = passfunc
+            inner_setup = testcase.setUp
         else:
-            inner_setup = lambda self: None
+            inner_setup = passfunc
 
         if hasattr(testcase, "tearDown"):
             inner_teardown = testcase.tearDown
