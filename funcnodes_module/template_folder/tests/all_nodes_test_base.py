@@ -7,20 +7,24 @@ import funcnodes as fn
 import asyncio
 
 
+def passfunc(self, *args, **kwargs):
+    pass
+
+
 def add_subclass_tests(cls):
     # Dynamically add test methods from sub_test_classes
     if not hasattr(cls, "sub_test_classes"):
         return
     for testcase in cls.sub_test_classes:
         if hasattr(testcase, "setUp"):
-            inner_setup = testcase.setUp
+            inner_setup = passfunc
         else:
             inner_setup = lambda self: None
 
         if hasattr(testcase, "tearDown"):
             inner_teardown = testcase.tearDown
         else:
-            inner_teardown = lambda self: None
+            inner_teardown = passfunc
 
         for attr_name in dir(testcase):
             if attr_name.startswith("test_"):
