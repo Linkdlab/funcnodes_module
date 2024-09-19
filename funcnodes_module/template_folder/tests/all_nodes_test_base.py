@@ -4,6 +4,13 @@ from {{ module_name }} import NODE_SHELF  # noqa
 from functools import wraps
 from typing import List
 import funcnodes as fn
+import asyncio
+
+
+
+
+def passfunc(self, *args, **kwargs):
+    pass
 
 
 def add_subclass_tests(cls):
@@ -11,14 +18,62 @@ def add_subclass_tests(cls):
     if not hasattr(cls, "sub_test_classes"):
         return
     for testcase in cls.sub_test_classes:
+        if hasattr(testcase, "setUp"):
+            inner_setup = testcase.setUp
+        else:
+            inner_setup = passfunc
+
+        if hasattr(testcase, "tearDown"):
+            inner_teardown = testcase.tearDown
+        else:
+            inner_teardown = passfunc
+
         for attr_name in dir(testcase):
             if attr_name.startswith("test_"):
                 # Retrieve the test method from the subclass
                 test_method = getattr(testcase, attr_name)
+
+                # Create a new test method that wraps the original test method
+                def make_new_test_method(
+                    test_method=test_method,
+                    inner_setup=inner_setup,
+                    inner_teardown=inner_teardown,
+                ):
+                    if asyncio.iscoroutinefunction(test_method):
+
+                        async def test_method_wrapper(self, *args, **kwargs):
+                            # Call the inner setup method
+                            inner_setup(self)
+                            # Call the test method
+                            await test_method(self, *args, **kwargs)
+                            print(f"Test {test_method.__name__} passed")
+                            # Call the inner teardown method
+                            inner_teardown(self)
+                    else:
+
+                        def test_method_wrapper(self, *args, **kwargs):
+                            # Call the inner setup method
+                            inner_setup(self)
+                            # Call the test method
+                            test_method(self, *args, **kwargs)
+                            print(f"Test {test_method.__name__} passed")
+                            # Call the inner teardown method
+                            inner_teardown(self)
+
+                    return test_method_wrapper
+
                 # Create a unique name for the test method in this class
                 new_test_name = f"test_{testcase.__name__}_{attr_name}"
                 # Add the test method to this class
-                setattr(cls, new_test_name, test_method)
+                setattr(
+                    cls,
+                    new_test_name,
+                    make_new_test_method(
+                        test_method=test_method,
+                        inner_setup=inner_setup,
+                        inner_teardown=inner_teardown,
+                    ),
+                )
 
 
 class TestAllNodesBase(unittest.IsolatedAsyncioTestCase):
@@ -42,6 +97,7 @@ class TestAllNodesBase(unittest.IsolatedAsyncioTestCase):
 
     @classmethod
     def setUpClass(cls):
+
         def get_all_nodes_classes(shelf, current=None):
             if current is None:
                 current = []
