@@ -12,6 +12,8 @@ import asyncio
 def passfunc(self, *args, **kwargs):
     pass
 
+async def async_passfunc(self, *args, **kwargs):
+    pass
 
 def add_subclass_tests(cls):
     # Dynamically add test methods from sub_test_classes
@@ -23,10 +25,20 @@ def add_subclass_tests(cls):
         else:
             inner_setup = passfunc
 
+        if hasattr(testcase, "asyncSetUp"):
+            inner_async_setup = testcase.asyncSetUp
+        else:
+            inner_async_setup = async_passfunc
+
         if hasattr(testcase, "tearDown"):
             inner_teardown = testcase.tearDown
         else:
             inner_teardown = passfunc
+
+        if hasattr(testcase, "asyncTearDown"):
+            inner_async_teardown = testcase.asyncTearDown
+        else:
+            inner_async_teardown = async_passfunc
 
         for attr_name in dir(testcase):
             if attr_name.startswith("test_"):
@@ -38,17 +50,22 @@ def add_subclass_tests(cls):
                     test_method=test_method,
                     inner_setup=inner_setup,
                     inner_teardown=inner_teardown,
+                    inner_async_setup=inner_async_setup,
+                    inner_async_teardown=inner_async_teardown,
                 ):
                     if asyncio.iscoroutinefunction(test_method):
 
                         async def test_method_wrapper(self, *args, **kwargs):
                             # Call the inner setup method
                             inner_setup(self)
+                            await inner_async_setup(self)
                             # Call the test method
                             await test_method(self, *args, **kwargs)
                             print(f"Test {test_method.__name__} passed")
                             # Call the inner teardown method
                             inner_teardown(self)
+                            await inner_async_teardown(self)
+
                     else:
 
                         def test_method_wrapper(self, *args, **kwargs):
@@ -72,6 +89,8 @@ def add_subclass_tests(cls):
                         test_method=test_method,
                         inner_setup=inner_setup,
                         inner_teardown=inner_teardown,
+                        inner_async_setup=inner_async_setup,
+                        inner_async_teardown=inner_async_teardown,
                     ),
                 )
 
