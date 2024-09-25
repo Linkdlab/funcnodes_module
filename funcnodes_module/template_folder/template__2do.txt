@@ -1,2 +1,5 @@
+- update licence file and entry in the pyproject.toml
+- update project.urls in the pyproject.toml
+- update classifiers in the pyproject.toml
 - publish project to github or similar
 - if possible potect the main and test branches against direct pushes
