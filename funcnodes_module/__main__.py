@@ -1,6 +1,7 @@
 import argparse
 import os
 from . import update_project, create_new_project
+from .gen_licence import gen_third_party_notice
 
 
 def main():
@@ -58,6 +59,17 @@ def main():
         action="store_true",
     )
 
+    gen_third_party_notice_parser = subparsers.add_parser(
+        "gen_third_party_notice",
+        help="Generate a third party notice file",
+    )
+
+    gen_third_party_notice_parser.add_argument(
+        "--path",
+        help="Project path",
+        default=os.getcwd(),
+    )
+
     # check_for_register_parser = subparsers.add_parser(
     #     "check_for_register",
     #     help="Check if the current project is ready for registration",
@@ -73,7 +85,8 @@ def main():
         # upgrades self
         with os.popen("pip install --upgrade funcnodes-module") as p:
             print(p.read())
-
+    elif args.task == "gen_third_party_notice":
+        gen_third_party_notice(args.path)
     # elif args.task == "check_for_register":
     #     register.check_for_register(args.path)
     else:

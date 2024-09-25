@@ -33,3 +33,18 @@ repos:
     hooks:
       - id: flake8
         args: ["--config=.flake8"]
+
+  - repo: local
+    hooks:
+      - id: install-local-package
+        name: Install Local Package
+        entry: poetry install
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: third-party-check
+        name: Third Party Check
+        entry: python -m funcnodes_module gen_third_party_notice
+        language: system
+        pass_filenames: false # This prevents passing staged files to the script
+        always_run: true # This ensures the script runs for every commit, not just when specific files are staged

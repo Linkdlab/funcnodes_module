@@ -1,13 +1,15 @@
 [tool.poetry]
 name = "funcnodes-module"
-version = "0.1.13"
+version = "0.1.14"
 description = ""
 authors = ["Julian Kimmig <julian.kimmig@gmx.net>"]
 readme = "README.md"
+license = "MIT"
 
 [tool.poetry.dependencies]
-python = ">=3.11"
+python = ">=3.11,<4.0"
 funcnodes = "*"
+licensecheck = ">=2024.3"
 
 
 [tool.poetry.group.dev.dependencies]

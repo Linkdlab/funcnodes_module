@@ -132,7 +132,6 @@ ENCODINGS = [
 ]
 
 # Print sorted encodings
-print(ENCODINGS)
 
 
 def read_file_content(filepath) -> Tuple[str, str]:
