@@ -339,5 +339,5 @@ sketch
 # .pnp.*
 
 # End of https://www.toptal.com/developers/gitignore/api/node,python,react,yarn
-
+/.licensecheck
 /dist/*
