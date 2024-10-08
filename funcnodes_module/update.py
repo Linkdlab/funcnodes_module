@@ -12,7 +12,14 @@ from .config import (
 from ._git import _init_git
 
 
-def update_project(path, nogit=False, force=False):
+def update_project(
+    path,
+    nogit=False,
+    force=False,
+    project_name=None,
+    module_name=None,
+    package_name=None,
+):
     # check if path is a project
     path = os.path.abspath(path)
 
@@ -26,7 +33,11 @@ def update_project(path, nogit=False, force=False):
         raise RuntimeError(f"Path {path} is not a project")
 
     name = os.path.basename(path)
-    project_name, module_name, package_name = create_names(name)
+    _project_name, _module_name, _package_name = create_names(name)
+
+    project_name = project_name or _project_name
+    module_name = module_name or _module_name
+    package_name = package_name or _package_name
 
     if not os.path.exists(os.path.join(path, module_name)):
         print(f"Cant find module {module_name} in project {name}")

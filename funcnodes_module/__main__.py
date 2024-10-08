@@ -59,6 +59,24 @@ def main():
         action="store_true",
     )
 
+    update_project_parser.add_argument(
+        "--project_name",
+        help="Project name",
+        default=None,
+    )
+
+    update_project_parser.add_argument(
+        "--module_name",
+        help="Module name",
+        default=None,
+    )
+
+    update_project_parser.add_argument(
+        "--package_name",
+        help="Package name",
+        default=None,
+    )
+
     gen_third_party_notice_parser = subparsers.add_parser(
         "gen_third_party_notice",
         help="Generate a third party notice file",
@@ -80,7 +98,14 @@ def main():
     if args.task == "new":
         create_new_project(args.name, args.path, args.with_react, nogit=args.nogit)
     elif args.task == "update":
-        update_project(args.path, nogit=args.nogit, force=args.force)
+        update_project(
+            args.path,
+            nogit=args.nogit,
+            force=args.force,
+            project_name=args.project_name,
+            module_name=args.module_name,
+            package_name=args.package_name,
+        )
     elif args.task == "upgrade":
         # upgrades self
         with os.popen("pip install --upgrade funcnodes-module") as p:

@@ -1,17 +1,10 @@
-import sys
-import os
 from typing import List
 import unittest
 import funcnodes as fn
 
-sys.path.append(
-    os.path.dirname(os.path.abspath(__file__))
-)  # in case test folder is not in sys path
-sys.path.append(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-)  # in case test folder is not in sys path
-import testmod as fnmodule  # noqa   # noqa: E402
-from all_nodes_test_base import TestAllNodesBase  # noqa: E402
+
+from .. import testmod as fnmodule  # noqa   # noqa: E402
+from .all_nodes_test_base import TestAllNodesBase  # noqa: E402
 from .test_dummy import DummyTest  # noqa: E402
 
 
