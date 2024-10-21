@@ -8,7 +8,7 @@ def main():
     argparser = argparse.ArgumentParser()
 
     subparsers = argparser.add_subparsers(dest="task")
-    subparsers.add_parser("upgrade", help="Upgrade the funcnodes-module package")
+    # subparsers.add_parser("upgrade", help="Upgrade the funcnodes-module package")
     new_project_parser = subparsers.add_parser("new", help="Create a new project")
 
     new_project_parser.add_argument("name", help="Name of the project")
@@ -106,10 +106,10 @@ def main():
             module_name=args.module_name,
             package_name=args.package_name,
         )
-    elif args.task == "upgrade":
-        # upgrades self
-        with os.popen("pip install --upgrade funcnodes-module") as p:
-            print(p.read())
+    # elif args.task == "upgrade":
+    #     # upgrades self
+    #     with os.popen("pip install --upgrade funcnodes-module") as p:
+    #         print(p.read())
     elif args.task == "gen_third_party_notice":
         gen_third_party_notice(args.path)
     # elif args.task == "check_for_register":
