@@ -27,7 +27,7 @@ package_requirements = [
 dev_requirements = [
     "pre-commit@*",
     "pytest@*",
-    "funcnodes-module@*",
+    "funcnodes-module@latest",
 ]
 
 gitpaths = [
