@@ -3,6 +3,7 @@ import shutil
 from .config import template_path, gitpaths
 from .utils import create_names, replace_names, read_file_content, write_file_content
 from ._git import _init_git
+from ._react import _init_react
 
 
 def create_new_project(name, path, with_react=False, nogit=False):
@@ -52,10 +53,6 @@ def create_new_project(name, path, with_react=False, nogit=False):
             )
             write_file_content(filepath, content, enc)
 
-    if not with_react:
-        reactfolder = os.path.join(basepath, "react_plugin")
-        shutil.rmtree(reactfolder)
-
     # rename the new_package folder to the project name
     os.rename(
         os.path.join(basepath, "new_package"),
@@ -76,4 +73,10 @@ def create_new_project(name, path, with_react=False, nogit=False):
             gitpath = os.path.join(basepath, gitpath)
             if os.path.exists(gitpath):
                 shutil.rmtree(gitpath)
+
+    reactfolder = os.path.join(basepath, "react_plugin")
+    if not with_react:
+        shutil.rmtree(reactfolder)
+    else:
+        _init_react(reactfolder)
         # remove the .git and .gitignore
