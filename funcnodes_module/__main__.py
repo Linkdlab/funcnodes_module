@@ -36,12 +36,6 @@ def main():
     )
 
     update_project_parser.add_argument(
-        "--with_react",
-        help="Add the templates for the react plugin",
-        action="store_true",
-    )
-
-    update_project_parser.add_argument(
         "--nogit",
         help="Skip the git part of the project creation/update",
         action="store_true",

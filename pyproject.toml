@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "funcnodes-module"
-version = "0.1.19"
+version = "0.1.20"
 description = ""
 authors = ["Julian Kimmig <julian.kimmig@gmx.net>"]
 readme = "README.md"
