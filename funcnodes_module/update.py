@@ -32,6 +32,8 @@ def update_project(
     if not os.path.exists(os.path.join(path, "pyproject.toml")):
         raise RuntimeError(f"Path {path} is not a project")
 
+    os.system("python -m pip install poetry --upgrade")
+
     name = os.path.basename(path)
     _project_name, _module_name, _package_name = create_names(name)
 
