@@ -14,6 +14,8 @@ def create_new_project(name, path, with_react=False, nogit=False):
     project_name, module_name, package_name = create_names(name)
 
     print(f"Creating project {name} at {basepath}")
+    os.system("python -m pip install poetry --upgrade")
+
     if os.path.exists(basepath) and os.path.isdir(basepath):
         # check if empty
         if os.listdir(basepath):

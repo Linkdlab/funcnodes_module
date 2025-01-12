@@ -7,13 +7,13 @@ import funcnodes as fn
 import asyncio
 
 
-
-
 def passfunc(self, *args, **kwargs):
     pass
 
+
 async def async_passfunc(self, *args, **kwargs):
     pass
+
 
 def add_subclass_tests(cls):
     # Dynamically add test methods from sub_test_classes
@@ -117,13 +117,12 @@ class TestAllNodesBase(unittest.IsolatedAsyncioTestCase):
     @classmethod
     def setUpClass(cls):
 
-        def get_all_nodes_classes(shelf:fn.Shelf, current=None):
+        def get_all_nodes_classes(shelf: fn.Shelf, current=None):
             if current is None:
                 current = []
             for node in shelf.nodes:
-                    if node not in current:
-                        current.append(node)
-
+                if node not in current:
+                    current.append(node)
 
             for subshelf in shelf.subshelves:
                 get_all_nodes_classes(subshelf, current)

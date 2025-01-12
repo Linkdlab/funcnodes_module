@@ -1,15 +1,14 @@
-[tool.poetry]
+[project]
 name = "funcnodes-module"
-version = "0.1.20"
+version = "0.1.21"
 description = ""
-authors = ["Julian Kimmig <julian.kimmig@gmx.net>"]
+authors = [{name = "Julian Kimmig", email = "julian.kimmig@linkdlab.de"}]
 readme = "README.md"
 license = "MIT"
-
-[tool.poetry.dependencies]
-python = ">=3.11"
-licensecheck = {version = ">=2024.3", python = ">=3.11,<4"}
-
+requires-python = ">=3.11"
+dependencies=[
+    "licensecheck >=2024.3; python_version >= '3.11' and python_version < '4'"
+]
 
 
 [tool.poetry.group.dev.dependencies]
@@ -22,7 +21,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 
-[tool.poetry.scripts]
+[project.scripts]
 funcnodes-module = 'funcnodes_module.__main__:main'
 
 [tool.vulture]
