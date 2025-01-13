@@ -1,6 +1,6 @@
 [project]
 name = "funcnodes-module"
-version = "0.1.21"
+version = "0.1.22"
 description = ""
 authors = [{name = "Julian Kimmig", email = "julian.kimmig@linkdlab.de"}]
 readme = "README.md"
