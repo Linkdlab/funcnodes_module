@@ -32,6 +32,6 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 
-[project.plugins."funcnodes.module"]
+[project.entry-points."funcnodes.module"]
 module = "{{ module_name }}"
 shelf = "{{ module_name }}:NODE_SHELF"
