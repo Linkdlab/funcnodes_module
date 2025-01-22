@@ -360,7 +360,7 @@ wheels = [
 
 [[package]]
 name = "funcnodes-module"
-version = "0.2.2"
+version = "0.2.3"
 source = { editable = "." }
 dependencies = [
     { name = "licensecheck", marker = "python_full_version < '4'" },

@@ -38,7 +38,3 @@ where = [ "src",]
 
 [tool.uv.sources.funcnodes-module]
 workspace = true
-
-[project.entry-points."funcnodes.module"]
-module = "{name}"
-shelf = "{name}:NODE_SHELF"
