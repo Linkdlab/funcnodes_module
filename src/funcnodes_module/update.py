@@ -49,6 +49,8 @@ def update_toml(path, module_name):
     # update poetry remaining entry points
     if "plugins" in project:
         if "funcnodes.module" in project["plugins"]:
+            if "entry-points" not in project:
+                project["entry-points"] = {}
             project["entry-points"]["funcnodes.module"] = project["plugins"][
                 "funcnodes.module"
             ]
