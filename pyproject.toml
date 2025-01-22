@@ -1,47 +1,44 @@
 [project]
 name = "funcnodes-module"
-version = "0.2.2"
+version = "0.2.3"
 description = ""
-authors = [{name = "Julian Kimmig", email = "julian.kimmig@linkdlab.de"}]
 readme = "README.md"
-license = { text = "MIT" }
 requires-python = ">=3.11"
-dependencies=[
-    "licensecheck >=2024.3; python_version >= '3.11' and python_version < '4'",
-]
+dependencies = [ "licensecheck >=2024.3; python_version >= '3.11' and python_version < '4'", "toml>=0.10.2",]
+[[project.authors]]
+name = "Julian Kimmig"
+email = "julian.kimmig@linkdlab.de"
+
 
 [dependency-groups]
-dev = [
-    "pre-commit",
-    "pytest",
-    "vulture",
-    "funcnodes",
-    "funcnodes-module",
-]
+dev = [ "pre-commit", "pytest", "vulture", "funcnodes", "funcnodes-module",]
 
-
-[tool.setuptools]
-packages = { find = { where = ["src"] } }
-package-dir = { ""= "src" }
+[project.license]
+text = "MIT"
 
 [project.scripts]
-funcnodes-module = 'funcnodes_module.__main__:main'
+funcnodes-module = "funcnodes_module.__main__:main"
 
 [tool.uv]
 package = true
 
-[tool.uv.sources]
-funcnodes-module = { workspace = true }
-
-
 [tool.vulture]
 min_confidence = 80
-exclude = ["src/funcnodes_module/template_folder"]
-paths = ["src/funcnodes_module"]
-
+exclude = [ "src/funcnodes_module/template_folder",]
+paths = [ "src/funcnodes_module",]
 
 [tool.ruff]
-exclude =  [
-"src/funcnodes_module/template_folder/tests/all_nodes_test_base.py",
-"src/funcnodes_module/template_folder/tests/test_all_nodes.py",
-]
+exclude = [ "src/funcnodes_module/template_folder/tests/all_nodes_test_base.py", "src/funcnodes_module/template_folder/tests/test_all_nodes.py",]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = [ "src",]
+
+[tool.uv.sources.funcnodes-module]
+workspace = true
+
+[project.entry-points."funcnodes.module"]
+module = "{name}"
+shelf = "{name}:NODE_SHELF"

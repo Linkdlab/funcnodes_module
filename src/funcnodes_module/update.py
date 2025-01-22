@@ -1,5 +1,6 @@
 import os
 import shutil
+import toml
 from .utils import create_names, replace_names, read_file_content, write_file_content
 from .config import (
     template_path,
@@ -10,6 +11,56 @@ from .config import (
     package_requirements,
 )
 from ._git import _init_git
+
+
+def update_toml(path, module_name):
+    with open(path, "r") as f:
+        tomldata = toml.load(f)
+
+    o_dump = toml.dumps(tomldata)
+
+    project = tomldata["project"]
+    if "license" in project:
+        if isinstance(project["license"], str):
+            project["license"] = {"text": project["license"]}
+
+    if "entry-points" not in project:
+        project["entry-points"] = {}
+
+    entry_points = project["entry-points"]
+
+    if "funcnodes.module" not in entry_points:
+        entry_points["funcnodes.module"] = {}
+
+    fnm = entry_points["funcnodes.module"]
+
+    if "module" not in fnm:
+        fnm["module"] = module_name
+
+    if "shelf" not in fnm:
+        fnm["shelf"] = f"{module_name}:NODE_SHELF"
+
+    if "tool" not in tomldata:
+        tomldata["tool"] = {}
+
+    tool = tomldata["tool"]
+
+    if "setuptools" not in tool:
+        tool["setuptools"] = {}
+
+    setuptools = tool["setuptools"]
+
+    if "packages" not in setuptools:
+        setuptools["packages"] = {"find": {"where": ["src"]}}
+
+    if "package-dir" not in setuptools:
+        setuptools["package-dir"] = {"": "src"}
+
+    n_dump = toml.dumps(tomldata)
+
+    if o_dump != n_dump:
+        with open(path, "w") as f:
+            toml.dump(tomldata, f)
 
 
 def update_project(
@@ -97,26 +148,7 @@ def update_project(
     os.system(f"uv add {' '.join(package_requirements)}")
 
     # update plugins in toml
-    content, enc = read_file_content(os.path.join(path, "pyproject.toml"))
-    content_chaged = False
-    if '[project.entry-points."funcnodes.module"]' not in content:
-        content += (
-            '\n[project.entry-points."funcnodes.module"]\n'
-            f'module = "{name}"\n'
-            f'shelf = "{name}:NODE_SHELF"\n'
-        )
-        content_chaged = True
-
-    if "[tool.setuptools]" not in content:
-        content += (
-            "\n[tool.setuptools]\n"
-            'packages = { find = { where = ["src"] } }\n'
-            'package-dir = { ""= "src" }\n'
-        )
-        content_chaged = True
-
-    if content_chaged:
-        write_file_content(os.path.join(path, "pyproject.toml"), content, enc)
+    update_toml(os.path.join(path, "pyproject.toml"), module_name=module_name)
 
     # check if the project is already in git
     if not os.path.exists(os.path.join(path, ".git")) and not nogit:
@@ -126,6 +158,10 @@ def update_project(
         if not nogit:
             os.system("uv run pre-commit install")
             os.system("uv run pre-commit autoupdate")
+            try:
+                os.system("uv run pre-commit run --all-files")
+            except Exception:
+                pass
 
     # check if the git branch dev and test exist
     current_dir = os.getcwd()

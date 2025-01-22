@@ -364,6 +364,7 @@ version = "0.2.2"
 source = { editable = "." }
 dependencies = [
     { name = "licensecheck", marker = "python_full_version < '4'" },
+    { name = "toml" },
 ]
 
 [package.dev-dependencies]
@@ -376,7 +377,10 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "licensecheck", marker = "python_full_version >= '3.11' and python_full_version < '4'", specifier = ">=2024.3" }]
+requires-dist = [
+    { name = "licensecheck", marker = "python_full_version >= '3.11' and python_full_version < '4'", specifier = ">=2024.3" },
+    { name = "toml", specifier = ">=0.10.2" },
+]
 
 [package.metadata.requires-dev]
 dev = [
@@ -869,6 +873,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ed/d0/85cfdb57375de23bf27b5f2d35574c5c1b2631e8ea1d309e79529938cec4/subprocess_monitor-0.2.2.tar.gz", hash = "sha256:ed73ce0762ff6913ad6282100e821e428eaa6f3840214144f44890b38e08d62e", size = 6846 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c9/80/ab6c6462b6530040c467b86648240fbcfa229c741adeca2e6f544e544ec1/subprocess_monitor-0.2.2-py3-none-any.whl", hash = "sha256:88cfb85eaeaa06d9e14f6b9074e7b50053819acc65ec3b3156555da6e622dda8", size = 8824 },
+]
+
+[[package]]
+name = "toml"
+version = "0.10.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/be/ba/1f744cdc819428fc6b5084ec34d9b30660f6f9daaf70eead706e3203ec3c/toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f", size = 22253 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/44/6f/7120676b6d73228c96e17f1f794d8ab046fc910d781c8d151120c3f1569e/toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b", size = 16588 },
 ]
 
 [[package]]
