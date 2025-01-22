@@ -98,19 +98,25 @@ def update_project(
 
     # update plugins in toml
     content, enc = read_file_content(os.path.join(path, "pyproject.toml"))
+    content_chaged = False
     if '[project.entry-points."funcnodes.module"]' not in content:
         content += (
             '\n[project.entry-points."funcnodes.module"]\n'
             f'module = "{name}"\n'
             f'shelf = "{name}:NODE_SHELF"\n'
         )
-        write_file_content(os.path.join(path, "pyproject.toml"), content, enc)
+        content_chaged = True
+
     if "[tool.setuptools]" not in content:
         content += (
             "\n[tool.setuptools]\n"
             'packages = { find = { where = ["src"] } }\n'
             'package-dir = { ""= "src" }\n'
         )
+        content_chaged = True
+
+    if content_chaged:
+        write_file_content(os.path.join(path, "pyproject.toml"), content, enc)
 
     # check if the project is already in git
     if not os.path.exists(os.path.join(path, ".git")) and not nogit:
