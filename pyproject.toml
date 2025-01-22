@@ -1,6 +1,6 @@
 [project]
 name = "funcnodes-module"
-version = "0.2.0"
+version = "0.2.1"
 description = ""
 authors = [{name = "Julian Kimmig", email = "julian.kimmig@linkdlab.de"}]
 readme = "README.md"
@@ -21,6 +21,7 @@ dev = [
 
 [tool.setuptools]
 packages = { find = { include = ["funcnodes_module*"] } }
+include-package-data = true
 
 [project.scripts]
 funcnodes-module = 'funcnodes_module.__main__:main'

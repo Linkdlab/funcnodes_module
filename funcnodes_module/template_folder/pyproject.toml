@@ -29,7 +29,7 @@ dev = [
 
 [tool.setuptools]
 packages = { find = { include = ["{{ module_name }}*"] } }
-
+include-package-data = true
 
 [project.entry-points."funcnodes.module"]
 module = "{{ module_name }}"
