@@ -47,7 +47,7 @@ def update_project(
                 os.path.join(path, module_name), os.path.join(path, "src", module_name)
             )
         else:
-            print(f"Cant find module {module_name} in project {name}")
+            print(f"Can't find module {module_name} in project {name}")
             return
     # check if funcnodes is in the project
 

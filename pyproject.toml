@@ -7,7 +7,8 @@ readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
 dependencies=[
-    "licensecheck >=2024.3; python_version >= '3.11' and python_version < '4'"
+    "funcnodes>=0.5.12",
+    "licensecheck >=2024.3; python_version >= '3.11' and python_version < '4'",
 ]
 
 [dependency-groups]
@@ -16,6 +17,7 @@ dev = [
     "pytest",
     "vulture",
     "funcnodes",
+    "funcnodes-module",
 ]
 
 
@@ -25,6 +27,13 @@ package-dir = { ""= "src" }
 
 [project.scripts]
 funcnodes-module = 'funcnodes_module.__main__:main'
+
+[tool.uv]
+package = true
+
+[tool.uv.sources]
+funcnodes-module = { workspace = true }
+
 
 [tool.vulture]
 min_confidence = 80

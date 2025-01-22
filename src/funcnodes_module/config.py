@@ -13,6 +13,7 @@ files_to_copy_if_missing = [
     os.path.join(".pre-commit-config.yaml"),
     os.path.join(".flake8"),
     os.path.join("MANIFEST.in"),
+    os.path.join("pytest.ini"),
 ]
 
 files_to_overwrite_on_force = [
