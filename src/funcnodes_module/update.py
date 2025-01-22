@@ -13,16 +13,46 @@ from .config import (
 from ._git import _init_git
 
 
+def package_name_version_to_name(name, version):
+    if not version or version == "*":
+        return name
+    if version.startswith("^"):
+        return f"{name}>={version[1:]}"
+    if version.startswith("~"):
+        return f"{name}>={version[1:]},<{version[1:]}.*"
+    if version[0].isdigit():
+        return f"{name}=={version}"
+    return f"{name}{version}"
+
+
 def update_toml(path, module_name):
     with open(path, "r") as f:
         tomldata = toml.load(f)
 
     o_dump = toml.dumps(tomldata)
 
+    if "tool" not in tomldata:
+        tomldata["tool"] = {}
+
+    tool = tomldata["tool"]
+
+    if "project" not in tomldata:
+        if "poetry" in tool:
+            tomldata["project"] = tool["poetry"]
+            del tool["poetry"]
+
     project = tomldata["project"]
     if "license" in project:
         if isinstance(project["license"], str):
             project["license"] = {"text": project["license"]}
+
+    # update poetry remaining entry points
+    if "plugins" in project:
+        if "funcnodes.module" in project["plugins"]:
+            project["entry-points"]["funcnodes.module"] = project["plugins"][
+                "funcnodes.module"
+            ]
+            del project["plugins"]["funcnodes.module"]
 
     if "entry-points" not in project:
         project["entry-points"] = {}
@@ -40,11 +70,6 @@ def update_toml(path, module_name):
     if "shelf" not in fnm:
         fnm["shelf"] = f"{module_name}:NODE_SHELF"
 
-    if "tool" not in tomldata:
-        tomldata["tool"] = {}
-
-    tool = tomldata["tool"]
-
     if "setuptools" not in tool:
         tool["setuptools"] = {}
 
@@ -55,6 +80,26 @@ def update_toml(path, module_name):
 
     if "package-dir" not in setuptools:
         setuptools["package-dir"] = {"": "src"}
+
+    # update remaining poetry [tool.poetry.group.dev.dependencies]
+    if "group" in project:
+        if "dev" in project["group"]:
+            if "dependencies" in project["group"]["dev"]:
+                dev = project["group"]["dev"]["dependencies"]
+
+                if "dependency-groups" not in project:
+                    project["dependency-groups"] = {}
+
+                project["dependency-groups"]["dev"] = [
+                    package_name_version_to_name(k, v) for k, v in dev.items()
+                ]
+
+    if "dependencies" in project:
+        if isinstance(project["dependencies"], dict):
+            project["dependencies"] = [
+                package_name_version_to_name(k, v)
+                for k, v in project["dependencies"].items()
+            ]
 
     n_dump = toml.dumps(tomldata)
 
