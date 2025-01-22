@@ -1,25 +1,26 @@
 [project]
 name = "funcnodes-module"
-version = "0.1.22"
+version = "0.2.0"
 description = ""
 authors = [{name = "Julian Kimmig", email = "julian.kimmig@linkdlab.de"}]
 readme = "README.md"
-license = "MIT"
+license = { text = "MIT" }
 requires-python = ">=3.11"
 dependencies=[
     "licensecheck >=2024.3; python_version >= '3.11' and python_version < '4'"
 ]
 
+[dependency-groups]
+dev = [
+    "pre-commit",
+    "pytest",
+    "vulture",
+    "funcnodes",
+]
 
-[tool.poetry.group.dev.dependencies]
-pytest = "*"
-funcnodes = "*"
-vulture = "^2.11"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
+[tool.setuptools]
+packages = { find = { include = ["funcnodes_module*"] } }
 
 [project.scripts]
 funcnodes-module = 'funcnodes_module.__main__:main'

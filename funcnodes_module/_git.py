@@ -16,11 +16,11 @@ def _init_git(
 
     # # add all files
 
-    os.system("poetry install")
-    os.system("poetry add pre-commit@* --group=dev")
-    os.system("poetry add pytest@* --group=dev")
-    os.system("poetry run pre-commit install")
-    os.system("poetry run pre-commit autoupdate")
+    os.system("uv sync")
+    os.system("uv add pre-commit@* --group=dev")
+    os.system("uv add pytest@* --group=dev")
+    os.system("uv run pre-commit install")
+    os.system("uv run pre-commit autoupdate")
 
     os.system("git add .")
     os.system('git commit -m "initial commit"')
