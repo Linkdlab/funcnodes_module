@@ -32,7 +32,7 @@ def update_project(
     if not os.path.exists(os.path.join(path, "pyproject.toml")):
         raise RuntimeError(f"Path {path} is not a project")
 
-    os.system("python -m pip install poetry --upgrade")
+    os.system("python -m pip install uv --upgrade")
 
     name = os.path.basename(path)
     _project_name, _module_name, _package_name = create_names(name)
@@ -86,14 +86,14 @@ def update_project(
             write_file_content(filepath, content, enc)
 
     # update requirements
-    os.system(f"poetry add {' '.join(dev_requirements)} --group=dev")
-    os.system(f"poetry add {' '.join(package_requirements)}")
+    os.system(f"uv add {' '.join(dev_requirements)} --group dev")
+    os.system(f"uv add {' '.join(package_requirements)}")
 
     # update plugins in toml
     content, enc = read_file_content(os.path.join(path, "pyproject.toml"))
-    if '[tool.poetry.plugins."funcnodes.module"]' not in content:
+    if '[project.entry-points."funcnodes.module"]' not in content:
         content += (
-            '\n[tool.poetry.plugins."funcnodes.module"]\n'
+            '\n[project.entry-points."funcnodes.module"]\n'
             f'module = "{name}"\n'
             f'shelf = "{name}:NODE_SHELF"\n'
         )
@@ -104,10 +104,10 @@ def update_project(
     if not os.path.exists(os.path.join(path, ".git")) and not nogit:
         _init_git(path)
     else:
-        os.system("poetry update")
+        os.system("uv sync --upgrade")
         if not nogit:
-            os.system("poetry run pre-commit install")
-            os.system("poetry run pre-commit autoupdate")
+            os.system("uv run pre-commit install")
+            os.system("uv run pre-commit autoupdate")
 
     # check if the git branch dev and test exist
     current_dir = os.getcwd()

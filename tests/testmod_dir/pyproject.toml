@@ -1,25 +1,22 @@
-[tool.poetry]
+[project]
 name = "testmod"
 version = "0.1.0"
 description = ""
 authors = []
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = ">=3.11"
-funcnodes = "*"
-
-
-[tool.poetry.group.dev.dependencies]
-pytest = "*"
-pre-commit = "*"
-funcnodes-module = "*"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires-python = ">=3.11"
+dependencies = [
+    "funcnodes",
+    ]
 
 
-[tool.poetry.plugins."funcnodes.module"]
+[dependency-groups]
+dev = [
+    "pre-commit",
+    "pytest",
+]
+
+
+[project.entry-points."funcnodes.module"]
 module = "testmod"
 shelf = "testmod:NODE_SHELF"

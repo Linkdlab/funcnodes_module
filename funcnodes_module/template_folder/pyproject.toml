@@ -1,7 +1,7 @@
 [project]
 name = "{{ package-name }}"
 version = "0.1.0"
-description = ""
+description = "{{ package-name }} is a funcnodes module"
 authors = []
 readme = "README.md"
 license = "AGPL-3.0"
@@ -11,25 +11,24 @@ classifiers = [
     ]
 requires-python = ">=3.11"
 dependencies = [
-    "funcnodes >=0.5.9",
+    "funcnodes",
     ]
 
 [project.urls]
-homepage  = ""
-source  = ""
-tracker  = ""
-documentation = ""
+homepage  = "https://pypi.org/project/funcnodes"
+source  = "https://github.com/Linkdlab/funcnodes"
+tracker  = "https://github.com/Linkdlab/funcnodes/issues"
 download = "https://pypi.org/project/{{ package-name }}/#files"
-"release notes" = ""
 
 
-[tool.poetry.group.dev.dependencies]
-pytest = "*"
-pre-commit = "*"
+[dependency-groups]
+dev = [
+    "pre-commit",
+    "pytest",
+]
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.setuptools]
+packages = { find = { include = ["{{ module_name }}*"] } }
 
 
 [project.entry-points."funcnodes.module"]
