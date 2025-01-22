@@ -57,8 +57,8 @@ def create_new_project(name, path, with_react=False, nogit=False):
 
     # rename the new_package folder to the project name
     os.rename(
-        os.path.join(basepath, "new_package"),
-        os.path.join(basepath, module_name),
+        os.path.join(basepath, "src", "new_package"),
+        os.path.join(basepath, "src", module_name),
     )
 
     # rename all files starting with "template__" by removing the "template__" prefix

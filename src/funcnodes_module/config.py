@@ -12,6 +12,8 @@ files_to_copy_if_missing = [
     os.path.join("tests", "test_all_nodes.py"),
     os.path.join(".pre-commit-config.yaml"),
     os.path.join(".flake8"),
+    os.path.join("MANIFEST.in"),
+    os.path.join("pytest.ini"),
 ]
 
 files_to_overwrite_on_force = [
@@ -21,13 +23,13 @@ files_to_overwrite_on_force = [
 
 
 package_requirements = [
-    "funcnodes@*",
+    "funcnodes",
 ]
 
 dev_requirements = [
-    "pre-commit@*",
-    "pytest@*",
-    "funcnodes-module@latest",
+    "pre-commit",
+    "pytest",
+    "funcnodes-module",
 ]
 
 gitpaths = [

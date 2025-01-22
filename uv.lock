@@ -360,26 +360,32 @@ wheels = [
 
 [[package]]
 name = "funcnodes-module"
-version = "0.1.22"
-source = { virtual = "." }
+version = "0.2.2"
+source = { editable = "." }
 dependencies = [
+    { name = "funcnodes" },
     { name = "licensecheck", marker = "python_full_version < '4'" },
 ]
 
 [package.dev-dependencies]
 dev = [
     { name = "funcnodes" },
+    { name = "funcnodes-module" },
     { name = "pre-commit" },
     { name = "pytest" },
     { name = "vulture" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "licensecheck", marker = "python_full_version >= '3.11' and python_full_version < '4'", specifier = ">=2024.3" }]
+requires-dist = [
+    { name = "funcnodes", specifier = ">=0.5.12" },
+    { name = "licensecheck", marker = "python_full_version >= '3.11' and python_full_version < '4'", specifier = ">=2024.3" },
+]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "funcnodes" },
+    { name = "funcnodes-module", editable = "." },
     { name = "pre-commit" },
     { name = "pytest" },
     { name = "vulture" },
