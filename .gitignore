@@ -314,3 +314,5 @@ sketch
 /.licensecheck
 /dist/*
 /dev/
+
+!/tests/testmod_dir/.env
