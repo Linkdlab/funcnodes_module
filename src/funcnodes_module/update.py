@@ -41,9 +41,14 @@ def update_project(
     module_name = module_name or _module_name
     package_name = package_name or _package_name
 
-    if not os.path.exists(os.path.join(path, module_name)):
-        print(f"Cant find module {module_name} in project {name}")
-        return
+    if not os.path.exists(os.path.join(path, "src", module_name)):
+        if os.path.exists(os.path.join(path, module_name)):
+            os.rename(
+                os.path.join(path, module_name), os.path.join(path, "src", module_name)
+            )
+        else:
+            print(f"Cant find module {module_name} in project {name}")
+            return
     # check if funcnodes is in the project
 
     content, _ = read_file_content(os.path.join(path, "pyproject.toml"))
@@ -98,8 +103,13 @@ def update_project(
             f'shelf = "{name}:NODE_SHELF"\n'
         )
         write_file_content(os.path.join(path, "pyproject.toml"), content, enc)
+    if "[tool.setuptools]" not in content:
+        content += (
+            "\n[tool.setuptools]\n"
+            'packages = { find = { where = ["src"] } }\n'
+            'package-dir = { ""= "src" }\n'
+        )
 
-        # remove the .git and .gitignore
     # check if the project is already in git
     if not os.path.exists(os.path.join(path, ".git")) and not nogit:
         _init_git(path)
