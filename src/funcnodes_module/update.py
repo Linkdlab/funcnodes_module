@@ -43,6 +43,8 @@ def update_project(
 
     if not os.path.exists(os.path.join(path, "src", module_name)):
         if os.path.exists(os.path.join(path, module_name)):
+            if not os.path.exists(os.path.join(path, "src")):
+                os.makedirs(os.path.join(path, "src"))
             os.rename(
                 os.path.join(path, module_name), os.path.join(path, "src", module_name)
             )
