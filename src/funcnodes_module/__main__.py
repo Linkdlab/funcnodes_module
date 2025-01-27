@@ -2,6 +2,101 @@ import argparse
 import os
 from . import update_project, create_new_project
 from .gen_licence import gen_third_party_notice
+import asyncio
+
+
+async def run_command(cmd, name, terminate_event):
+    process = await asyncio.create_subprocess_exec(
+        *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+    )
+    print(f"{name} started with PID: {process.pid}")
+
+    try:
+        stdout, stderr = await process.communicate()
+        if process.returncode != 0:
+            print(f"{name} failed with exit code {process.returncode}")
+            print(stderr.decode())
+            terminate_event.set()  # Signal termination
+        else:
+            print(f"{name} completed successfully.")
+    finally:
+        return process
+
+
+async def run_demo_worker():
+    # Termination event to signal processes to stop
+    server_terminate_event = asyncio.Event()
+    worker_started_event = asyncio.Event()
+
+    # Run both commands concurrently
+    server_task = asyncio.create_task(
+        run_command(
+            ["uv", "run", "funcnodes", "--dir", ".funcnodes", "runserver"],
+            "Server",
+            server_terminate_event,
+        )
+    )
+    worker_task_start = asyncio.create_task(
+        run_command(
+            [
+                "uv",
+                "run",
+                "funcnodes",
+                "--dir",
+                ".funcnodes",
+                "worker",
+                "--uuid",
+                "demoworker",
+                "start",
+            ],
+            "Worker",
+            worker_started_event,
+        )
+    )
+
+    processes = [server_task, worker_task_start]
+
+    # Wait for any command to fail or complete
+    done, pending = await asyncio.wait(
+        [server_task, worker_task_start], return_when=asyncio.FIRST_COMPLETED
+    )
+
+    if worker_started_event.is_set() and not server_terminate_event.is_set():
+        worker_started_event.clear()
+        worker_task_start = asyncio.create_task(
+            run_command(
+                [
+                    "uv",
+                    "run",
+                    "funcnodes",
+                    "--dir",
+                    ".funcnodes",
+                    "worker",
+                    "--uuid",
+                    "demoworker",
+                    "new",
+                    "--create-only",
+                    "--not-in-venv",
+                ],
+                "Worker",
+                worker_started_event,
+            )
+        )
+        processes.append(worker_task_start)
+        done, pending = await asyncio.wait(
+            list(pending) + [worker_task_start], return_when=asyncio.FIRST_COMPLETED
+        )
+
+    # Cancel any remaining tasks
+    for task in pending:
+        task.cancel()
+        try:
+            await task
+        except asyncio.CancelledError:
+            pass
+
+    # Wait for all tasks to finish properly
+    await asyncio.gather(*processes, return_exceptions=True)
 
 
 def main():
@@ -76,6 +171,11 @@ def main():
         help="Generate a third party notice file",
     )
 
+    demoworker_parser = subparsers.add_parser(  # noqa F841
+        "demoworker",
+        help="Generate and run a demo worker",
+    )
+
     gen_third_party_notice_parser.add_argument(
         "--path",
         help="Project path",
@@ -108,6 +208,11 @@ def main():
         gen_third_party_notice(args.path)
     # elif args.task == "check_for_register":
     #     register.check_for_register(args.path)
+    elif args.task == "demoworker":
+        # os.system("uv sync --upgrade")
+        # os.system("uv build")
+        asyncio.run(run_demo_worker())
+
     else:
         print("Invalid task")
 
