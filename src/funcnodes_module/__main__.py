@@ -209,8 +209,8 @@ def main():
     # elif args.task == "check_for_register":
     #     register.check_for_register(args.path)
     elif args.task == "demoworker":
-        # os.system("uv sync --upgrade")
-        # os.system("uv build")
+        os.system("uv sync --upgrade")
+        os.system("uv build")
         asyncio.run(run_demo_worker())
 
     else:
