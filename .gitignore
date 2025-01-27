@@ -312,6 +312,7 @@ sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/node,python,react,yarn
 /.licensecheck
+/.funcnodes
 /dist/*
 /dev/
 /src/*.egg-info
