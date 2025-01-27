@@ -92,9 +92,9 @@ def update_toml(path, module_name):
                 dev = project["group"]["dev"]["dependencies"]
 
                 if "dependency-groups" not in tomldata:
-                    project["dependency-groups"] = {}
+                    tomldata["dependency-groups"] = {}
 
-                project["dependency-groups"]["dev"] = [
+                tomldata["dependency-groups"]["dev"] = [
                     package_name_version_to_name(k, v) for k, v in dev.items()
                 ]
 
