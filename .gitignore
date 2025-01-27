@@ -314,5 +314,5 @@ sketch
 /.licensecheck
 /dist/*
 /dev/
-
+/src/*.egg-info
 !/tests/testmod_dir/.env
