@@ -3,6 +3,8 @@ import os
 from . import update_project, create_new_project
 from .gen_licence import gen_third_party_notice
 import asyncio
+import subprocess_monitor
+from pathlib import Path
 
 
 async def run_command(cmd, name, terminate_event):
@@ -25,21 +27,23 @@ async def run_command(cmd, name, terminate_event):
 
 async def run_demo_worker():
     # Termination event to signal processes to stop
-    server_terminate_event = asyncio.Event()
-    worker_started_event = asyncio.Event()
 
-    # Run both commands concurrently
-    server_task = asyncio.create_task(
-        run_command(
-            ["uv", "run", "funcnodes", "--dir", ".funcnodes", "runserver"],
-            "Server",
-            server_terminate_event,
-        )
-    )
-    worker_task_start = asyncio.create_task(
-        run_command(
-            [
-                "uv",
+    from funcnodes_core import config
+
+    config.reload(funcnodes_config_dir=str(Path(".funcnodes").absolute()))
+
+    spm = subprocess_monitor.SubprocessMonitor()
+
+    spm_task = asyncio.create_task(spm.run())
+
+    demoworker_path = Path(".funcnodes") / "workers" / "worker_demoworker"
+    if (
+        not demoworker_path.exists()
+        or not (demoworker_path.parent / "worker_demoworker.json").exists()
+    ):
+        res = await subprocess_monitor.send_spawn_request(
+            command="uv",
+            args=[
                 "run",
                 "funcnodes",
                 "--dir",
@@ -47,56 +51,79 @@ async def run_demo_worker():
                 "worker",
                 "--uuid",
                 "demoworker",
-                "start",
+                "new",
+                "--not-in-venv",
+                "--create-only",
             ],
-            "Worker",
-            worker_started_event,
+            host=spm.host,
+            port=spm.port,
+        )
+        createworkerpid = res["pid"]
+        await asyncio.sleep(1)
+        while createworkerpid in spm.process_ownership:
+            await asyncio.sleep(1)
+
+    res = await subprocess_monitor.send_spawn_request(
+        command="uv",
+        args=[
+            "run",
+            "funcnodes",
+            "--dir",
+            ".funcnodes",
+            "worker",
+            "--uuid",
+            "demoworker",
+            "start",
+        ],
+        host=spm.host,
+        port=spm.port,
+    )
+    startworkerpid = res["pid"]
+
+    res = await subprocess_monitor.send_spawn_request(
+        command="uv",
+        args=[
+            "run",
+            "funcnodes",
+            "--dir",
+            ".funcnodes",
+            "runserver",
+        ],
+        host=spm.host,
+        port=spm.port,
+    )
+    startserverpid = res["pid"]
+
+    asyncio.create_task(
+        subprocess_monitor.subscribe(
+            pid=startworkerpid,
+            host=spm.host,
+            port=spm.port,
+            callback=lambda data: print("Worker >>", data["data"]),
         )
     )
 
-    processes = [server_task, worker_task_start]
-
-    # Wait for any command to fail or complete
-    done, pending = await asyncio.wait(
-        [server_task, worker_task_start], return_when=asyncio.FIRST_COMPLETED
+    asyncio.create_task(
+        subprocess_monitor.subscribe(
+            pid=startserverpid,
+            host=spm.host,
+            port=spm.port,
+            callback=lambda data: print("Server >>", data["data"]),
+        )
     )
 
-    if worker_started_event.is_set() and not server_terminate_event.is_set():
-        worker_started_event.clear()
-        worker_task_start = asyncio.create_task(
-            run_command(
-                [
-                    "uv",
-                    "run",
-                    "funcnodes",
-                    "--dir",
-                    ".funcnodes",
-                    "worker",
-                    "--uuid",
-                    "demoworker",
-                    "new",
-                    "--create-only",
-                    "--not-in-venv",
-                ],
-                "Worker",
-                worker_started_event,
-            )
-        )
-        processes.append(worker_task_start)
-        done, pending = await asyncio.wait(
-            list(pending) + [worker_task_start], return_when=asyncio.FIRST_COMPLETED
-        )
+    try:
+        while True:
+            await asyncio.sleep(10)
+    except KeyboardInterrupt:
+        pass
 
-    # Cancel any remaining tasks
-    for task in pending:
-        task.cancel()
-        try:
-            await task
-        except asyncio.CancelledError:
-            pass
+    spm.stop_serve()
+    print("Stopped server")
+    await spm_task
+    print("Stopped monitor")
 
-    # Wait for all tasks to finish properly
-    await asyncio.gather(*processes, return_exceptions=True)
+    await asyncio.sleep(2)
 
 
 def main():
@@ -209,8 +236,8 @@ def main():
     # elif args.task == "check_for_register":
     #     register.check_for_register(args.path)
     elif args.task == "demoworker":
-        # os.system("uv sync --upgrade")
-        # os.system("uv build")
+        os.system("uv sync --upgrade")
+        os.system("uv build")
         asyncio.run(run_demo_worker())
 
     else:
