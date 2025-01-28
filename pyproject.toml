@@ -1,6 +1,6 @@
 [project]
 name = "funcnodes-module"
-version = "0.2.7"
+version = "0.2.8"
 description = ""
 readme = "README.md"
 requires-python = ">=3.11"
@@ -11,7 +11,7 @@ email = "julian.kimmig@linkdlab.de"
 
 
 [dependency-groups]
-dev = [ "pre-commit", "pytest", "vulture", "funcnodes", "funcnodes-module",]
+dev = [ "pre-commit", "pytest", "vulture", "funcnodes>=0.5.16", "funcnodes-module",]
 
 [project.license]
 text = "MIT"

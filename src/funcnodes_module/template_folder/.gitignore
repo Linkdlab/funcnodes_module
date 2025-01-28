@@ -336,5 +336,5 @@ sketch
 /.licensecheck
 /.funcnodes
 /dist/*
-
+/src/*.egg-info
 /2do.txt
