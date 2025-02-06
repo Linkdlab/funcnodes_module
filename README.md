@@ -115,5 +115,3 @@ pip install .
 ## 📜 License
 
 This project is licensed under the MIT License.
-
-This updated README includes all CLI commands, making it comprehensive and user-friendly. Let me know if you need further tweaks! 🚀
