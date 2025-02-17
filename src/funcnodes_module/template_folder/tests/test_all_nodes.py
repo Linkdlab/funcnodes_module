@@ -9,8 +9,6 @@ sys.path.append(
     os.path.dirname(os.path.abspath(__file__))
 )  # in case test folder is not in sys path
 from all_nodes_test_base import TestAllNodesBase # noqa: E402
-fn.config.IN_NODE_TEST = True
-
 
 class TestAllNodes(TestAllNodesBase):
     # in this test class all nodes should be triggered at least once to mark them as testing
