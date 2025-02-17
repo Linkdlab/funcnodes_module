@@ -317,5 +317,6 @@ sketch
 /dev/
 /src/*.egg-info
 !/tests/testmod_dir/.env
-codebase.txt
+
+*codebase.txt
 generate_codebase.yaml
