@@ -203,6 +203,12 @@ def main():
         help="Generate and run a demo worker",
     )
 
+    demoworker_parser.add_argument(
+        "--no-build",
+        help="Skip building the project",
+        action="store_true",
+    )
+
     gen_third_party_notice_parser.add_argument(
         "--path",
         help="Project path",
@@ -237,7 +243,8 @@ def main():
     #     register.check_for_register(args.path)
     elif args.task == "demoworker":
         os.system("uv sync --upgrade")
-        os.system("uv build")
+        if not args.no_build:
+            os.system("uv build")
         asyncio.run(run_demo_worker())
 
     else:
