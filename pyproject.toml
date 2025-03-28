@@ -5,6 +5,7 @@ description = ""
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+ "funcnodes>=0.5.37",
  "licensecheck >=2024.3; python_version >= '3.11' and python_version < '4'",
  "toml>=0.10.2",
 ]
@@ -20,6 +21,7 @@ dev = [
  "vulture",
  "funcnodes>=0.5.35",
  "funcnodes-module",
+ "pytest-funcnodes",
 ]
 
 [project.license]
