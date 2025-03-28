@@ -25,6 +25,7 @@ download = "https://pypi.org/project/{{ package-name }}/#files"
 dev = [
     "pre-commit",
     "pytest",
+    "pytest-funcnodes",
 ]
 
 [tool.setuptools]
