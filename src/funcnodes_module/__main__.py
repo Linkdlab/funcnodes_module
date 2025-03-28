@@ -204,8 +204,8 @@ def main():
     )
 
     demoworker_parser.add_argument(
-        "--no-build",
-        help="Skip building the project",
+        "--build",
+        help="building the project",
         action="store_true",
     )
 
@@ -243,7 +243,7 @@ def main():
     #     register.check_for_register(args.path)
     elif args.task == "demoworker":
         os.system("uv sync --upgrade")
-        if not args.no_build:
+        if not args.build:
             os.system("uv build")
         asyncio.run(run_demo_worker())
 
