@@ -15,11 +15,6 @@ repos:
       # Update the uv lockfile
       - id: uv-lock
 
-  - repo: https://github.com/jendrikseipp/vulture
-    rev: "v2.14" # or any later Vulture version
-    hooks:
-      - id: vulture
-
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
     rev: v0.11.2
@@ -27,10 +22,8 @@ repos:
       # Run the linter.
       - id: ruff
         args: [--fix]
-        exclude: "src/funcnodes_module/template_folder/tests/.*"
       # Run the formatter.
       - id: ruff-format
-        exclude: 'src/funcnodes_module/template_folder/tests/.*'
 
   - repo: https://github.com/pycqa/flake8
     rev: 7.1.2 # pick a git hash / tag to point to
