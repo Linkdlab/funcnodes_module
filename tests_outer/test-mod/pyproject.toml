@@ -1,5 +1,5 @@
 [project]
-name = "testmod"
+name = "test-mod"
 version = "0.1.0"
 description = ""
 readme = "README.md"
@@ -14,7 +14,7 @@ requires = [ "setuptools>70",]
 build-backend = "setuptools.build_meta"
 
 [project.entry-points."funcnodes.module"]
-module = "testmod"
+module = "test-mod"
 shelf = "testmod:NODE_SHELF"
 
 [tool.pytest.ini_options]

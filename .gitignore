@@ -389,8 +389,6 @@ fabric.properties
 /.funcnodes
 /dist/*
 /dev/
-/src/*.egg-info
-!/tests/testmod_dir/.env
-
+!/tests_outer/test-mod/.env
 *codebase.txt
 *codebase.yaml

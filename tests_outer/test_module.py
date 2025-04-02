@@ -1,5 +1,6 @@
 import unittest
 import tempfile
+import os
 from pathlib import Path
 from funcnodes_module import create_new_project, update_project
 from funcnodes_module.utils import (
@@ -32,3 +33,13 @@ class TestMod(unittest.TestCase):
 
                 self.assertTrue(dummy_module_path.exists())
                 update_project(dummy_module_path)
+
+                # test build
+                buildpath = (dummy_module_path / "dist").absolute()
+                with chdir_context(dummy_module_path):
+                    self.assertFalse(buildpath.exists())
+                    os.system("uv build --all --no-cache-dir")
+                    self.assertTrue(
+                        buildpath.exists(),
+                        f"'dist' not found only {list(Path('.').iterdir())}",
+                    )
