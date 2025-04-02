@@ -1,5 +1,5 @@
 from pytest_funcnodes import nodetest
-from testmod import node2test  # noqa E402
+from test_mod import node2test  # noqa E402
 
 
 @nodetest(node2test)

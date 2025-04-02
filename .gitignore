@@ -390,6 +390,6 @@ fabric.properties
 /dist/*
 /dev/
 /src/*.egg-info
-!/tests/testmod_dir/.env
+!/tests/test-mod/.env
 *codebase.txt
 *codebase.yaml

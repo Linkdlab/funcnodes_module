@@ -1,5 +1,5 @@
 from pytest_funcnodes import all_nodes_tested
-import testmod as fnmodule  # noqa
+import test_mod as fnmodule  # noqa
 
 
 def test_all_nodes_tested(all_nodes):

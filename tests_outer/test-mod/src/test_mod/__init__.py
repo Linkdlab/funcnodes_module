@@ -2,14 +2,14 @@ import funcnodes as fn
 
 
 @fn.NodeDecorator(
-    node_id="testmod.node2test",
+    node_id="test-mod.node2test",
 )
 def node2test():
     pass
 
 
 @fn.NodeDecorator(
-    node_id="testmod.node2ignore",
+    node_id="test-mod.node2ignore",
 )
 def node2ignore():
     pass
