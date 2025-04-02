@@ -10,7 +10,7 @@ dependencies = [ "funcnodes",]
 dev = [ "pre-commit", "pytest",]
 
 [build-system]
-requires = [ "setuptools>=42",]
+requires = [ "setuptools>70",]
 build-backend = "setuptools.build_meta"
 
 [project.entry-points."funcnodes.module"]

@@ -1,9 +1,12 @@
-import os
+from pathlib import Path
+from os import system as ossystem, getcwd as osgetcwd, chdir as oschdir
 
 
-def _init_react(basepath):
-    os.chdir(basepath)
+def init_react(basepath: Path):
+    cd = osgetcwd()
+    oschdir(basepath / "")
     # install yarn if not installed
-    os.system("npm install -g yarn")
+    ossystem("npm install -g yarn")
     # install react
-    os.system("yarn install")
+    ossystem("yarn install")
+    oschdir(cd)

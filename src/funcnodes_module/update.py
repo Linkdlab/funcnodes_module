@@ -1,7 +1,14 @@
-import os
+from os import system as ossystem
 import shutil
+from pathlib import Path
+from typing import Union
 import toml
-from .utils import create_names, replace_names, read_file_content, write_file_content
+from .utils import (
+    create_names,
+    replace_names,
+    read_file_content,
+    write_file_content,
+)
 from .config import (
     template_path,
     files_to_overwrite,
@@ -10,7 +17,7 @@ from .config import (
     dev_requirements,
     package_requirements,
 )
-from ._git import _init_git
+from ._git import update_git
 from warnings import warn
 
 
@@ -196,7 +203,7 @@ def update_toml(path, module_name):
 
 
 def update_project(
-    path,
+    path: Union[str, Path],
     nogit=False,
     force=False,
     project_name=None,
@@ -204,39 +211,42 @@ def update_project(
     package_name=None,
 ):
     # check if path is a project
-    path = os.path.abspath(path)
+    path = Path(path).absolute()
 
-    if not os.path.exists(path):
+    if not path.exists():
         raise RuntimeError(f"Path {path} does not exist")
 
-    if not os.path.isdir(path):
+    if not path.is_dir():
         raise RuntimeError(f"Path {path} is not a directory")
 
-    if not os.path.exists(os.path.join(path, "pyproject.toml")):
+    toml_path = path / "pyproject.toml"
+    if not toml_path.exists():
         raise RuntimeError(f"Path {path} is not a project")
 
-    os.system("python -m pip install uv --upgrade")
+    ossystem("python -m pip install uv --upgrade")
 
-    name = os.path.basename(path)
+    name = path.name
     _project_name, _module_name, _package_name = create_names(name)
 
     project_name = project_name or _project_name
     module_name = module_name or _module_name
     package_name = package_name or _package_name
 
-    if not os.path.exists(os.path.join(path, "src", module_name)):
-        if os.path.exists(os.path.join(path, module_name)):
-            if not os.path.exists(os.path.join(path, "src")):
-                os.makedirs(os.path.join(path, "src"))
-            os.rename(
-                os.path.join(path, module_name), os.path.join(path, "src", module_name)
-            )
+    srcpath = path / "src"
+
+    module_path = srcpath / module_name
+    non_src_module_path = path / module_name
+    if not module_path.exists():
+        if non_src_module_path.exists():
+            if not srcpath.exists():
+                srcpath.makedirs(parents=True, exist_ok=True)
+            non_src_module_path.rename(module_path)
         else:
             print(f"Can't find module {module_name} in project {name}")
             return
     # check if funcnodes is in the project
 
-    content, _ = read_file_content(os.path.join(path, "pyproject.toml"))
+    content, _ = read_file_content(toml_path)
     if "funcnodes" not in content:
         print(f"Project at {path} does not seem to be a funcnodes project")
         return
@@ -246,10 +256,10 @@ def update_project(
         f2over += files_to_overwrite_on_force
 
     for file in f2over:
-        filepath = os.path.join(path, file)
-        if not os.path.exists(os.path.dirname(filepath)):
-            os.makedirs(os.path.dirname(filepath))
-        shutil.copy2(os.path.join(template_path, file), filepath)
+        filepath = path / file
+        if not filepath.parent.exists():
+            filepath.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(template_path / file, filepath)
         content, enc = read_file_content(filepath)
 
         content = replace_names(
@@ -261,11 +271,11 @@ def update_project(
         write_file_content(filepath, content, enc)
 
     for file in files_to_copy_if_missing:
-        if not os.path.exists(os.path.join(path, file)):
-            filepath = os.path.join(path, file)
-            if not os.path.exists(os.path.dirname(filepath)):
-                os.makedirs(os.path.dirname(filepath))
-            shutil.copy2(os.path.join(template_path, file), filepath)
+        filepath = path / file
+        if not filepath.exists():
+            if not filepath.parent.exists():
+                filepath.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(template_path / file, filepath)
             content, enc = read_file_content(filepath)
             content = replace_names(
                 content,
@@ -276,40 +286,12 @@ def update_project(
             write_file_content(filepath, content, enc)
 
     # update requirements
-    os.system(f"uv add {' '.join(dev_requirements)} --group dev")
-    os.system(f"uv add {' '.join(package_requirements)}")
+    ossystem(f"uv add {' '.join(dev_requirements)} --group dev")
+    ossystem(f"uv add {' '.join(package_requirements)}")
 
     # update plugins in toml
-    update_toml(os.path.join(path, "pyproject.toml"), module_name=module_name)
+    update_toml(toml_path, module_name=module_name)
 
     # check if the project is already in git
-    if not os.path.exists(os.path.join(path, ".git")) and not nogit:
-        _init_git(path)
-    else:
-        os.system("uv sync --upgrade")
-        if not nogit:
-            os.system("uv run pre-commit install")
-            os.system("uv run pre-commit autoupdate")
-            try:
-                os.system("uv run pre-commit run --all-files")
-            except Exception:
-                pass
-
-    # check if the git branch dev and test exist
-    current_dir = os.getcwd()
-    os.chdir(path)
-    branches = [
-        s.strip().strip("*").strip()
-        for s in os.popen("git branch").read().strip().split("\n")
-    ]
-    if "dev" not in branches:
-        os.system("git reset")
-        os.system("git checkout -b dev")
-        os.system('git commit --allow-empty -m "initial commit"')
-
-    if "test" not in branches:
-        os.system("git reset")
-        os.system("git checkout -b test")
-        os.system('git commit --allow-empty -m "initial commit"')
-
-    os.chdir(current_dir)
+    if not nogit:
+        update_git(path)
