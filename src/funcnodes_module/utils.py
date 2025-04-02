@@ -1,7 +1,9 @@
-from typing import Tuple
+from typing import Tuple, Union
+from pathlib import Path
+from os import chdir as oschdir
 
 
-def create_names(name):
+def create_names(name: str):
     project_name = name.replace("_", " ").replace("-", " ").title()
     module_name = name.replace(" ", "_").replace("-", "_").lower()
     package_name = module_name.replace("_", "-")
@@ -9,7 +11,7 @@ def create_names(name):
 
 
 def replace_names(
-    content,
+    content: str,
     project_name=None,
     module_name=None,
     package_name=None,
@@ -134,7 +136,7 @@ ENCODINGS = [
 # Print sorted encodings
 
 
-def read_file_content(filepath) -> Tuple[str, str]:
+def read_file_content(filepath: Path) -> Tuple[str, str]:
     for enc in ENCODINGS:
         try:
             with open(filepath, "r", encoding=enc) as f:
@@ -147,6 +149,23 @@ def read_file_content(filepath) -> Tuple[str, str]:
     )
 
 
-def write_file_content(filepath, content, enc):
+def write_file_content(filepath: Path, content: str, enc: str):
     with open(filepath, "w", encoding=enc) as f:
         f.write(content)
+
+
+class chdir_context:
+    """ "
+    Context manager to change the current working directory
+    and restore it after exiting the context.
+    """
+
+    def __init__(self, path: Union[str, Path]):
+        self.path = Path(path)
+
+    def __enter__(self):
+        self.saved_path = Path.cwd()
+        oschdir(self.path)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):  # noqa: F841
+        oschdir(self.saved_path)

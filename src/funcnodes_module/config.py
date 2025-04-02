@@ -1,37 +1,38 @@
-import os
+from pathlib import Path
+from typing import List
 
-template_path = os.path.join(os.path.dirname(__file__), "template_folder")
-files_to_overwrite = [
-    os.path.join(".github", "workflows", "py_test.yml"),
-    os.path.join(".github", "workflows", "version_publish_main.yml"),
-    os.path.join(".github", "actions", "install_package", "action.yml"),
+template_path = Path(__file__).parent / "template_folder"
+files_to_overwrite: List[Path] = [
+    Path(".github", "workflows", "py_test.yml"),
+    Path(".github", "workflows", "version_publish_main.yml"),
+    Path(".github", "actions", "install_package", "action.yml"),
 ]
 
-files_to_copy_if_missing = [
-    os.path.join("tests", "test_all_nodes_pytest.py"),
-    os.path.join(".pre-commit-config.yaml"),
-    os.path.join(".flake8"),
-    os.path.join("MANIFEST.in"),
-    os.path.join("pytest.ini"),
+files_to_copy_if_missing: List[Path] = [
+    Path("tests", "test_all_nodes_pytest.py"),
+    Path(".pre-commit-config.yaml"),
+    Path(".flake8"),
+    Path("MANIFEST.in"),
+    Path("pytest.ini"),
 ]
 
-files_to_overwrite_on_force = [
-    os.path.join(".pre-commit-config.yaml"),
-    os.path.join(".flake8"),
+files_to_overwrite_on_force: List[Path] = [
+    Path(".pre-commit-config.yaml"),
+    Path(".flake8"),
 ]
 
 
-package_requirements = [
+package_requirements: List[str] = [
     "funcnodes",
 ]
 
-dev_requirements = [
+dev_requirements: List[str] = [
     "pre-commit",
     "pytest",
     "funcnodes-module",
 ]
 
-gitpaths = [
+gitpaths: List[str] = [
     ".github",
     ".git",
 ]

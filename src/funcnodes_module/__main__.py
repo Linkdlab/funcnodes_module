@@ -1,5 +1,5 @@
 import argparse
-import os
+from os import system as ossystem, getcwd as osgetcwd
 from . import update_project, create_new_project
 from .gen_licence import gen_third_party_notice
 import asyncio
@@ -150,7 +150,7 @@ def main():
     new_project_parser.add_argument(
         "--path",
         help="Project path",
-        default=os.getcwd(),
+        default=osgetcwd(),
     )
 
     update_project_parser = subparsers.add_parser(
@@ -166,7 +166,7 @@ def main():
     update_project_parser.add_argument(
         "--path",
         help="Project path",
-        default=os.getcwd(),
+        default=osgetcwd(),
     )
 
     update_project_parser.add_argument(
@@ -212,7 +212,7 @@ def main():
     gen_third_party_notice_parser.add_argument(
         "--path",
         help="Project path",
-        default=os.getcwd(),
+        default=osgetcwd(),
     )
 
     # check_for_register_parser = subparsers.add_parser(
@@ -235,16 +235,16 @@ def main():
         )
     # elif args.task == "upgrade":
     #     # upgrades self
-    #     with os.popen("pip install --upgrade funcnodes-module") as p:
+    #     with ospopen("pip install --upgrade funcnodes-module") as p:
     #         print(p.read())
     elif args.task == "gen_third_party_notice":
         gen_third_party_notice(args.path)
     # elif args.task == "check_for_register":
     #     register.check_for_register(args.path)
     elif args.task == "demoworker":
-        os.system("uv sync --upgrade")
+        ossystem("uv sync --upgrade")
         if args.build:
-            os.system("uv build")
+            ossystem("uv build")
         asyncio.run(run_demo_worker())
 
     else:

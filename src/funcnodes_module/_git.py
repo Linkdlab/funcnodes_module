@@ -1,27 +1,59 @@
-import os
+from os import system as ossystem, popen as ospopen
+from .utils import chdir_context
 
 
-def _init_git(
+def init_git(
     path,
 ):
-    current_dir = os.getcwd()
-    os.chdir(path)
-    # initialize git
-    os.system("git init")
-    os.system('git commit --allow-empty -m "initial commit"')
-    # create a dev and test branch
-    os.system("git checkout -b test")
-    os.system('git commit --allow-empty -m "initial commit"')
-    os.system("git checkout -b dev")
+    with chdir_context(path):
+        # initialize git
+        ossystem("git init")
+        # create a dev and test branch
+        ossystem('git commit --allow-empty -m "initial commit"')
+        ossystem("git checkout -b test")
+        ossystem('git commit --allow-empty -m "initial commit"')
+        ossystem("git checkout -b dev")
 
-    # # add all files
+        # # add all files
 
-    os.system("uv sync")
-    os.system("uv add pre-commit@* --group=dev")
-    os.system("uv add pytest@* --group=dev")
-    os.system("uv run pre-commit install")
-    os.system("uv run pre-commit autoupdate")
+        ossystem("uv sync")
+        ossystem("uv add pre-commit@* --group=dev")
+        ossystem("uv add pytest@* --group=dev")
+        ossystem("uv run pre-commit install")
+        ossystem("uv run pre-commit autoupdate")
 
-    os.system("git add .")
-    os.system('git commit -m "initial commit"')
-    os.chdir(current_dir)
+        ossystem("git add .")
+        ossystem('git commit -m "initial commit"')
+
+
+def update_git(
+    path,
+):
+    git_path = path / ".git"
+    if not git_path.exists():
+        init_git(path)
+
+    else:
+        ossystem("uv sync --upgrade")
+        ossystem("uv run pre-commit install")
+        ossystem("uv run pre-commit autoupdate")
+        try:
+            ossystem("uv run pre-commit run --all-files")
+        except Exception:
+            pass
+
+        with chdir_context(path):
+            branches = [
+                s.strip().strip("*").strip()
+                for s in ospopen("git branch").read().strip().split("\n")
+            ]
+
+            if "test" not in branches:
+                ossystem("git reset")
+                ossystem("git checkout -b test")
+                ossystem('git commit --allow-empty -m "initial commit"')
+
+            if "dev" not in branches:
+                ossystem("git reset")
+                ossystem("git checkout -b dev")
+                ossystem('git commit --allow-empty -m "initial commit"')

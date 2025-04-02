@@ -1,7 +1,6 @@
 import pytest
 import funcnodes_module
-import os
-
+from pathlib import Path
 import sys
 
 print(sys.path)
@@ -9,6 +8,4 @@ print(sys.path)
 
 @pytest.mark.asyncio
 async def test_update():
-    funcnodes_module.update_project(
-        os.path.abspath(os.path.join(os.path.dirname(__file__), "..")), nogit=True
-    )
+    funcnodes_module.update_project(Path(__file__).parent.parent.absolute(), nogit=True)
