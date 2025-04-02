@@ -161,7 +161,7 @@ class chdir_context:
     """
 
     def __init__(self, path: Union[str, Path]):
-        self.path = Path(path)
+        self.path = Path(path).absolute()
 
     def __enter__(self):
         self.saved_path = Path.cwd()
