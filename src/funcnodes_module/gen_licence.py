@@ -1,26 +1,34 @@
 import licensecheck
-import os
+
 import json
 import requests
 import re
 import warnings
+from typing import Union
+from pathlib import Path
 
 
-def get_pypy_data(basedir, package_data, version=True):
-    pipydatair = os.path.join(basedir, "pypi_data")
-    if not os.path.exists(pipydatair):
-        os.makedirs(pipydatair)
+def get_pypy_data(basedir: Union[str, Path], package_data, version=True):
+    basedir = Path(basedir)
+    pipydatair = basedir / "pypi_data"
+    if not basedir.exists():
+        basedir.mkdir(parents=True, exist_ok=True)
 
     if version:
-        target_file = os.path.join(
-            pipydatair, f"{package_data['name']}_{package_data['version']}.json"
+        target_file = (
+            pipydatair / f"{package_data['name']}_{package_data['version']}.json"
         )
-    else:
-        target_file = os.path.join(pipydatair, f"{package_data['name']}_latest.json")
 
-    if os.path.exists(target_file) and os.path.getsize(target_file) > 0 and version:
-        with open(target_file, "r") as f:
-            return json.load(f)
+    else:
+        target_file = pipydatair / f"{package_data['name']}_latest.json"
+
+    try:
+        # try since the file might be corrupted or empty
+        if target_file.exists() and target_file.stat().st_size > 0 and version:
+            with open(target_file, "r") as f:
+                return json.load(f)
+    except Exception:
+        pass
 
     if version:
         baseurl = "https://pypi.org/pypi/{package}/{version}/json"
@@ -180,17 +188,18 @@ def get_license_text(basedir, package_data):
     return None, None
 
 
-def gen_third_party_notice(path: str):
-    rawpath = os.path.join(path, ".licensecheck")
-    licensecheck_path = os.path.join(rawpath, "licensecheck.json")
-    if not os.path.exists(rawpath):
-        os.makedirs(rawpath)
-    licensecheck.main({"format": "json", "file": licensecheck_path})
+def gen_third_party_notice(path: Union[str, Path]):
+    path = Path(path)
+    rawpath = path / ".licensecheck"
+    licensecheck_path = rawpath / "licensecheck.json"
+    if not rawpath.exists():
+        rawpath.mkdir(parents=True, exist_ok=True)
+    licensecheck.main({"format": "json", "file": str(licensecheck_path.absolute())})
 
     with open(licensecheck_path, "r") as f:
         data = json.load(f)
 
-    packagefile = os.path.join(rawpath, "packages.json")
+    packagefile = rawpath / "packages.json"
     try:
         with open(packagefile, "r") as f:
             packages = json.load(f)
@@ -243,9 +252,11 @@ def gen_third_party_notice(path: str):
         out += data
 
     dec_out = out.encode("utf-8", errors="replace")
-    with open(os.path.join(path, "THIRD_PARTY_NOTICES.md"), "wb+") as f:
+    with open(path / "THIRD_PARTY_NOTICES.md", "wb+") as f:
         f.write(dec_out)
 
 
 if __name__ == "__main__":
-    gen_third_party_notice(os.getcwd())
+    from os import getcwd as osgetcwd
+
+    gen_third_party_notice(osgetcwd())
