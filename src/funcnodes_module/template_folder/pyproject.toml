@@ -28,10 +28,20 @@ dev = [
     "pytest-funcnodes",
 ]
 
-[tool.setuptools]
-packages = { find = { where = ["src"] } }
-package-dir = { ""= "src" }
+
 
 [project.entry-points."funcnodes.module"]
 module = "{{ module_name }}"
 shelf = "{{ module_name }}:NODE_SHELF"
+
+[build-system]
+requires = [ "setuptools>70",]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = { find = { where = ["src"] } }
+package-dir = { ""= "src" }
+
+
+[tool.pytest.ini_options]
+pythonpath = [ "src",]
