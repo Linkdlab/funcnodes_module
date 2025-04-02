@@ -11,7 +11,7 @@ from ._react import init_react
 def create_new_project(
     name: str, path: Union[Path, str], with_react=False, nogit=False
 ):
-    path = Path(path)
+    path = Path(path).absolute()
     basepath = path / name
     srcpath = basepath / "src"
     module_name = name.replace(" ", "_").replace("-", "_").lower()

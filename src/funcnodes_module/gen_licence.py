@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 def get_pypy_data(basedir: Union[str, Path], package_data, version=True):
-    basedir = Path(basedir)
+    basedir = Path(basedir).absolute()
     pipydatair = basedir / "pypi_data"
     if not basedir.exists():
         basedir.mkdir(parents=True, exist_ok=True)
@@ -189,7 +189,7 @@ def get_license_text(basedir, package_data):
 
 
 def gen_third_party_notice(path: Union[str, Path]):
-    path = Path(path)
+    path = Path(path).absolute()
     rawpath = path / ".licensecheck"
     licensecheck_path = rawpath / "licensecheck.json"
     if not rawpath.exists():
