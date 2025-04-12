@@ -239,7 +239,7 @@ def update_project(
     if not module_path.exists():
         if non_src_module_path.exists():
             if not srcpath.exists():
-                srcpath.makedirs(parents=True, exist_ok=True)
+                srcpath.mkdir(parents=True, exist_ok=True)
             non_src_module_path.rename(module_path)
         else:
             print(f"Can't find module {module_name} in project {name}")
