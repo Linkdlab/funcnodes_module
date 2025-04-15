@@ -30,6 +30,7 @@ dev_requirements: List[str] = [
     "pre-commit",
     "pytest",
     "funcnodes-module",
+    "pytest_funcnodes",
 ]
 
 gitpaths: List[str] = [
