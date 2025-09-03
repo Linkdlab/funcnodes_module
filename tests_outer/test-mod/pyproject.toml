@@ -10,7 +10,7 @@ dependencies = [ "funcnodes",]
 dev = [ "pre-commit", "pytest",]
 
 [build-system]
-requires = ["hatchling"]
+requires = [ "hatchling",]
 build-backend = "hatchling.build"
 
 [project.entry-points."funcnodes.module"]
@@ -20,5 +20,11 @@ shelf = "testmod:NODE_SHELF"
 [tool.pytest.ini_options]
 pythonpath = [ "src",]
 
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = [ "src",]
+
 [tool.hatch.build.targets.wheel]
-packages = ["src/testmod"]
+packages = [ "src/test_mod",]
