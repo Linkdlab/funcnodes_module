@@ -36,6 +36,22 @@ async def run_demo_worker():
 
     spm_task = asyncio.create_task(spm.run())
 
+    # Wait for the subprocess monitor server to be ready
+    max_retries = 30
+    retry_delay = 0.5
+    for attempt in range(max_retries):
+        try:
+            # Try to connect to the server by making a simple request
+            import aiohttp
+            async with aiohttp.ClientSession() as session:
+                async with session.get(f"http://{spm.host}:{spm.port}/") as resp:
+                    if resp.status == 200:
+                        break
+        except (aiohttp.ClientConnectorError, ConnectionRefusedError):
+            if attempt == max_retries - 1:
+                raise Exception(f"SubprocessMonitor server failed to start after {max_retries * retry_delay} seconds")
+            await asyncio.sleep(retry_delay)
+
     demoworker_path = Path(".funcnodes") / "workers" / "worker_demoworker"
     if (
         not demoworker_path.exists()

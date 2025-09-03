@@ -37,8 +37,9 @@ class TestMod(unittest.TestCase):
                 # test build
                 buildpath = (dummy_module_path / "dist").absolute()
                 with chdir_context(dummy_module_path):
+                    print("Current directory: ", os.getcwd())
                     self.assertFalse(buildpath.exists())
-                    os.system("uv build --all --no-cache-dir")
+                    os.system("uv build --no-cache-dir")
                     self.assertTrue(
                         buildpath.exists(),
                         f"'dist' not found only {list(Path('.').iterdir())}",

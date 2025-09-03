@@ -5,7 +5,7 @@ description = ""
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
- "funcnodes>=0.5.37",
+ "funcnodes>=1.0.0",
  "licensecheck >=2024.3; python_version >= '3.11' and python_version < '4'",
  "toml>=0.10.2",
 ]
@@ -19,7 +19,7 @@ dev = [
  "pre-commit",
  "pytest",
  "vulture",
- "funcnodes>=0.5.35",
+ "funcnodes>=1.0.0",
  "funcnodes-module",
  "pytest-funcnodes",
 ]
@@ -29,6 +29,10 @@ text = "MIT"
 
 [project.scripts]
 funcnodes-module = "funcnodes_module.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.uv]
 package = true
@@ -44,8 +48,5 @@ paths = [ "src/funcnodes_module",]
 [tool.ruff]
 exclude = [ "src/funcnodes_module/template_folder/tests/all_nodes_test_base.py", "src/funcnodes_module/template_folder/tests/test_all_nodes.py",]
 
-[tool.setuptools.package-dir]
-"" = "src"
-
-[tool.setuptools.packages.find]
-where = [ "src",]
+[tool.hatch.build.targets.wheel]
+packages = ["src/funcnodes_module"]
