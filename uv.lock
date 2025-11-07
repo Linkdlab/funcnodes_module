@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.11"
 resolution-markers = [
     "sys_platform == 'emscripten'",
@@ -418,7 +418,7 @@ wheels = [
 
 [[package]]
 name = "funcnodes-module"
-version = "0.4.0"
+version = "0.4.1"
 source = { editable = "." }
 dependencies = [
     { name = "funcnodes" },
