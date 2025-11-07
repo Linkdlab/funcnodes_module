@@ -17,11 +17,11 @@ def init_git(
         # # add all files
 
         ossystem("uv sync")
-        ossystem("uv add pre-commit@* --group=dev")
-        ossystem("uv add pytest@* --group=dev")
+
+        ossystem("uv add pre-commit --group=dev")
+        ossystem("uv add pytest --group=dev")
         ossystem("uv run pre-commit install")
         ossystem("uv run pre-commit autoupdate")
-
         ossystem("git add .")
         ossystem('git commit -m "initial commit"')
 
